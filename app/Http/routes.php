@@ -11,6 +11,5 @@
 |
 */
 
-$app->get('/', function () use ($app) {
-    return $app->welcome();
-});
+$app->get('/', 'WebController@index');
+$app->get('/search', 'WebController@search');
