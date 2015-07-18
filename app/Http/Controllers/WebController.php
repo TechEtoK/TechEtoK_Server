@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Words;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class WebController extends BaseController
@@ -18,9 +19,14 @@ class WebController extends BaseController
     {
         $keyword = $request->input('keyword', null);
 
-        // TODO: 검색어로 검색 결과 찾도록 변경해야함.
+        // TODO: Eloquent ORM으로 변경해야함.
+        $words = DB::table('words')->whereIn('id', function($q) use ($keyword) {
+            $q->select('word_id')
+                ->from('words_tags')
+                ->where('tag', 'LIKE', '%' . $keyword . '%')
+                ->groupBy('word_id');
+        })->orWhere('word', '=', $keyword)->get();
 
-        $words = Words::all();
         return view('search', ['keyword' => $keyword, 'words' => $words]);
     }
 
