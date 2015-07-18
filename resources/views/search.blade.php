@@ -6,21 +6,10 @@
 
 <body>
 <h1>검색어: {{ $keyword }}</h1>
-<table>
-    <thead>
-    <tr>
-        <td>ID</td>
-        <td>Word</td>
-        <td>File</td>
-    </tr>
-    </thead>
-    <tbody>
+<ul>
     @foreach ($words as $word)
-        <tr>
-            <td><a href="/{{ $word->word }}">{{ $word->word }}</a></td>
-        </tr>
+        <li><a href="/{{ $word->word }}">{{ $word->word }} (유사성: {{ $word->similar_percent }}%)</a></li>
     @endforeach
-    </tbody>
-</table>
+</ul>
 </body>
 </html>
