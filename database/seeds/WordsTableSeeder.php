@@ -8,12 +8,12 @@ class WordsTableSeeder extends Seeder
     public function run()
     {
         Words::create([
-            'word' => 'linked list',
+            'word' => 'Linked List',
             'file_name' => 'linked_list.md'
         ]);
 
         Words::create([
-            'word' => 'delegate',
+            'word' => 'Delegate',
             'file_name' => 'delegate.md'
         ]);
     }
