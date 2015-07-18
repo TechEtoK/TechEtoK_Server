@@ -1,12 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tech E to K</title>
-</head>
+@extends("layouts.base")
 
-<body>
-ID: {{ $word->id }}<br />
-Word: {{ $word->word }}<br />
-FileName: {{ $word->file_name }}
-</body>
-</html>
+@section("content")
+    <div class="well">
+        {!! $data !!}
+    </div>
+@stop
+
+@section("script")
+    <script>
+        $(function() {
+            // TODO:
+        });
+    </script>
+@stop

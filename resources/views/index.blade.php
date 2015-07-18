@@ -19,7 +19,7 @@
 
         <div class="search-results">
             @foreach ($words as $word)
-                <a href="/{{ $word->word }}" class="list-group-item">{{ $word->word }} (유사성: {{ $word->similar_percent }})</a>
+                <a href="/{{ $word->word }}" class="list-group-item">{{ $word->word }} ({{ $word->similar_percent }}% 일치)</a>
             @endforeach
         </div>
     </div>
@@ -76,7 +76,7 @@
                                         $(".list-group").hide();
                                     } else {
                                         $.each(r.words, function(index, value) {
-                                            $(".search-results").append("<a href='/" + value.word + "' class='list-group-item'>" + value.word + " (유사성: " + value.similar_percent + "%)</a>");
+                                            $(".search-results").append("<a href='/" + value.word + "' class='list-group-item'>" + value.word + " (" + value.similar_percent + "% 일치)</a>");
                                         });
                                         $(".search-results-count").text(r.words.length);
 

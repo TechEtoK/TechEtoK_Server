@@ -27,8 +27,25 @@ class WebController extends BaseController
 
         try {
             $word = Words::query()->where('word', '=', $word)->firstOrFail();
-            // TODO: .md 파일 가지고 와서 내용을 뿌려주어야 한다.
-            return view('detail', ['word' => $word]);
+            $words_markdown = file_get_contents('http://words.techetok.kr/' . $word->file_name);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL,            'https://api.github.com/markdown/raw');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST,           true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,     $words_markdown);
+            curl_setopt($ch, CURLOPT_HTTPHEADER,     array(
+                'Content-Type: text/plain',
+                'Content-Length: ' . strlen($words_markdown),
+                'User-Agent: TechEtoK'
+                )
+            );
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            $data = html_entity_decode($data, ENT_QUOTES, 'UTF-8');
+
+            return view('detail', ['data' => $data]);
         } catch (ModelNotFoundException $e) {
             return view('not_found');
         }
