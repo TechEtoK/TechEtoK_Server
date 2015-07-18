@@ -1,0 +1,24 @@
+{
+  "name": "TechEtoK",
+  "version": "1.0.0",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "techetok"
+  ],
+  "description": "English tech words to Korean",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5"
+  }
+}
+
