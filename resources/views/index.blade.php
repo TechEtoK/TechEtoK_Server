@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Tech E to K</title>
-    <script type="javascript">
+    <script type="text/javascript">
         function validateKeyword() {
             var form = document.searchForm;
 
@@ -19,6 +19,10 @@
 </head>
 
 <body>
-<h1>검색어: <?php echo $keyword; ?></h1>
+<h1>어떤 단어가 궁금하신가요?</h1>
+<form name="searchForm" method="get">
+    <input type="text" size="20" placeholder="검색어를 입력해주세요." name="keyword" />
+    <input type="button" onclick="validateKeyword()" value="검색" />
+</form>
 </body>
 </html>

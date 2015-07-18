@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Words;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -15,6 +16,9 @@ class WebController extends BaseController
     public function search(Request $request)
     {
         $keyword = $request->input('keyword', null);
-        return view('search', ['keyword' => $keyword]);
+
+        $words = Words::query()->get()->all();
+
+        return view('search', ['keyword' => $keyword, 'words' => $words]);
     }
 }
