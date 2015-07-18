@@ -9,12 +9,12 @@ class WordsTableSeeder extends Seeder
     {
         Words::create([
             'word' => 'linked list',
-            'filename' => 'linked_list.md'
+            'file_name' => 'linked_list.md'
         ]);
 
         Words::create([
             'word' => 'delegate',
-            'filename' => 'delegate.md'
+            'file_name' => 'delegate.md'
         ]);
     }
 }

@@ -13,3 +13,4 @@
 
 $app->get('/', 'WebController@index');
 $app->get('/search', 'WebController@search');
+$app->get('/{word}', 'WebController@detail');

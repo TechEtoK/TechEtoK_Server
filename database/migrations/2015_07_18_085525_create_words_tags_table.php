@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWordsTable extends Migration
+class CreateWordsTagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,16 @@ class CreateWordsTable extends Migration
      */
     public function up()
     {
-        Schema::create('words', function (Blueprint $table) {
+        Schema::create('words_tags', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 
             // new fields
-            $table->string('word');
-            $table->string('filename');
+            $table->unsignedInteger('word_id');
+            $table->string('tag');
+
+            $table->unique(array('word_id', 'tag'));
+            $table->index('tag');
         });
     }
 
@@ -29,6 +32,6 @@ class CreateWordsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('words');
+        Schema::drop('words_tags');
     }
 }

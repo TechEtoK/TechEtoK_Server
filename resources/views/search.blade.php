@@ -17,9 +17,7 @@
     <tbody>
     @foreach ($words as $word)
         <tr>
-            <td>{{ $word->id }}</td>
-            <td>{{ $word->word }}</td>
-            <td>{{ $word->filename }}</td>
+            <td><a href="/{{ $word->word }}">{{ $word->word }}</a></td>
         </tr>
     @endforeach
     </tbody>
