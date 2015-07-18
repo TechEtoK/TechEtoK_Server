@@ -70,4 +70,8 @@
         color: #ffbbbc;
         background-color: #c0392b;
     }
+
+    .jumbotron {
+        padding: 10px;
+    }
 }
