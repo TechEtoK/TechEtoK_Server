@@ -32,7 +32,7 @@
             <h3 class="panel-title"><i class="glyphicon glyphicon-alert"></i> 검색 결과가 없습니다.</h3>
         </div>
         <div class="panel-body">
-            <a href="#" class="lead">단어를 추가해주시겠어요?</a>
+            <a href="/update" class="lead">단어를 추가해주시겠어요?</a>
         </div>
     </div>
 @stop

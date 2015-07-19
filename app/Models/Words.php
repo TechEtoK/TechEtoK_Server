@@ -7,7 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 final class Words extends Model
 {
-    public static function searchWords($query) {
+    public static function getByWord($word)
+    {
+        return Words::query()->where('word', '=', $word)->first();
+    }
+
+    public static function searchWords($query)
+    {
         // TODO: Cache 적용 (CacheKey = query);
         // TODO: Eloquent ORM으로 변경해야함.
         $words = DB::table('words')->whereIn('id', function($q) use ($query) {

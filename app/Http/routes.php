@@ -12,6 +12,7 @@
 */
 
 $app->get('/', 'WebController@index');
+$app->get('/update', 'WebController@update');
 $app->get('/{word}', 'WebController@detail');
 
 $app->get('/api/search', 'ApiController@search');

@@ -9,7 +9,7 @@
 
     <div class="form-actions">
         <button class="btn btn-primary">다시 검색하기</button>
-        <button class='btn btn-warning pull-right'>수정하기</button>
+        <button class="btn btn-warning pull-right">수정하기</button>
     </div>
 @stop
 
@@ -23,7 +23,7 @@
 
             $(".btn-warning").click(function () {
                 if (confirm("더 좋은 생각이 있으세요? 수정해주시겠어요?")) {
-                    // TODO: 수정 페이지로 이동
+                    location.href = "/update?word={{ $word }}";
                 }
                 return false;
             });
