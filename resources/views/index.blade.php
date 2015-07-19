@@ -13,9 +13,9 @@
         @if (!isset($query) || count($words) === 0)
             style="display: none;"
         @endif>
-        <a href="#" class="list-group-item disabled">
-            <i class="glyphicon glyphicon-search"></i> 검색결과 (<span class="search-results-count"></span>건)
-        </a>
+        <div class="list-group-item disabled">
+            <i class="glyphicon glyphicon-search"></i> 검색결과
+        </div>
 
         <div class="search-results">
             @foreach ($words as $word)
@@ -78,7 +78,6 @@
                                         $.each(r.words, function(index, value) {
                                             $(".search-results").append("<a href='/" + value.word + "' class='list-group-item'>" + value.word + " (" + value.similar_percent + "% 일치)</a>");
                                         });
-                                        $(".search-results-count").text(r.words.length);
 
                                         $(".panel-warning").hide();
                                         $(".list-group").show();

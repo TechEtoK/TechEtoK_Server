@@ -47,7 +47,7 @@ class WebController extends BaseController
 
             return view('detail', ['word' => $query, 'data' => $data]);
         } catch (ModelNotFoundException $e) {
-            return view('not_found');
+            return redirect('/');
         }
     }
 }
