@@ -5,15 +5,22 @@
 @stop
 
 @section("content")
-    <div class="well">
-        {!! $data !!}
-    </div>
+    {!! $published_html !!}
 @stop
 
 @section("script")
     <script>
         $(function() {
-            // TODO:
+            $(".usage_nav").click(function () {
+                // Nav
+                $(".nav-pills").children().removeClass("active");
+                $(this).addClass("active");
+
+                // Well (Contents)
+                var w_id = "well" + $(this).data("w_id");
+                $("#well_list").children().hide();
+                $("#" + w_id).show();
+            });
         });
     </script>
 @stop
