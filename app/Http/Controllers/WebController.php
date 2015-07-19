@@ -23,10 +23,10 @@ class WebController extends BaseController
 
     public function detail($word)
     {
-        $word = urldecode($word);
+        $query = urldecode($word);
 
         try {
-            $word = Words::query()->where('word', '=', $word)->firstOrFail();
+            $word = Words::query()->where('word', '=', $query)->firstOrFail();
             $words_markdown = file_get_contents('http://words.techetok.kr/' . $word->file_name);
 
             $ch = curl_init();
@@ -45,7 +45,7 @@ class WebController extends BaseController
 
             $data = html_entity_decode($data, ENT_QUOTES, 'UTF-8');
 
-            return view('detail', ['data' => $data]);
+            return view('detail', ['word' => $query, 'data' => $data]);
         } catch (ModelNotFoundException $e) {
             return view('not_found');
         }

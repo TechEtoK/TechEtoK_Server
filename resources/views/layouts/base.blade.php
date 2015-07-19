@@ -11,7 +11,7 @@
     {{--TODO: Favicon--}}
     {{--<link rel="icon" href="../../favicon.ico">--}}
 
-    <title>@section("title", "TechEtoK")</title>
+    <title>@yield("title", "TechEtoK")</title>
 
     <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/techetok.css" />

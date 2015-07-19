@@ -1,5 +1,9 @@
 @extends("layouts.base")
 
+@section("title")
+    {{ $word }} :: TechEtoK
+@stop
+
 @section("content")
     <div class="well">
         {!! $data !!}
