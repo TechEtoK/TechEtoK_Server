@@ -58,21 +58,16 @@ class WebController extends BaseController
 
                 $published_html = '<ul class="nav nav-pills">';
                 for ($i = 0; $i < $usage_count; $i++) {
-                    $published_html .= '<li role="presentation" class="usage_nav';
-                    if ($i == 0) {
-                        $published_html .= ' active';
-                    }
-                    $published_html .= '" data-w_id="' . $i .'"><a href="#">' . $usages[$i] .'</a></li>';
+                    $published_html .= '<li role="presentation">';
+                    $published_html .= '<a href="#' . $i . '">' . $usages[$i] .'</a>';
+                    $published_html .= '</li>';
                 }
                 $published_html .= '</ul>';
-                $published_html .= '<div id="well_list">';
 
+                $published_html .= '<div class="well-list">';
                 for ($i = 0; $i < $usage_count; $i++) {
-                    $published_html .= '<div class="well" id="well' . $i . '"';
-                    if ($i > 0) {
-                        $published_html .= 'style="display: none;"';
-                    }
-                    $published_html .= '>' . $title;
+                    $published_html .= '<div class="well" id="well' . $i . '">';
+                    $published_html .= $title;
 
                     $well_start = 0;
                     $well_end = stripos($data, '<hr>', $well_start);
