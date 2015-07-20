@@ -43,7 +43,7 @@ final class Words extends Model
                 return 0;
             }
             // 내림차순 정렬
-            return ($l_word->similar_percent < $r_word->simliar_percent) ? 1 : -1;
+            return ($l_word->similar_percent < $r_word->similar_percent) ? 1 : -1;
         });
         return $words;
     }
