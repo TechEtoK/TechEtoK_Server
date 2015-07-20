@@ -33,10 +33,40 @@ code {
     font-size: 80%;
 }
 
+textarea[id^="examples"] {
+    margin-bottom: 5px;
+}
+
+div[id^="related_words"] {
+    margin-bottom: 5px;
+}
+
+input[id^="related_words_"] {
+    width: 49% !important;
+}
+
+input[id^="related_links"] {
+    margin-bottom: 5px;
+}
+
 .add-platform {
     margin-bottom: 20px;
 }
 
 .add-platform > button {
     width: 100%;
+}
+
+span.delete_word_content {
+    display: none;
+    float: right;
+    color: #888888;
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+@media (max-width: 767px) {
+    input[id^="related_words_"] {
+        margin-bottom: 5px;
+    }
 }

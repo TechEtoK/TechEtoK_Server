@@ -67,22 +67,6 @@
     margin-bottom: 10px;
 }
 
-textarea[id^="examples"] {
-    margin-bottom: 5px;
-}
-
-div[id^="related_words"] {
-    margin-bottom: 5px;
-}
-
-input[id^="related_words_"] {
-    width: 49% !important;
-}
-
-input[id^="related_links"] {
-    margin-bottom: 5px;
-}
-
 @media (max-width: 767px) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
         color: #ffffff;
@@ -97,9 +81,5 @@ input[id^="related_links"] {
 
     .jumbotron {
         padding: 10px;
-    }
-
-    input[id^="related_words_"] {
-        margin-bottom: 5px;
     }
 }

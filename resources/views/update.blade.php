@@ -18,25 +18,21 @@
     </h3>
 
     <div class="well">
-        <form action="/api/word/{{ isset($word) ? "edit" : "add" }}">
+        <form id="wordForm" action="/api/word/{{ isset($word) ? "edit" : "add" }}">
             <div class="form-group">
                 <label for="title">단어명(영어)</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
             </div>
 
-            <hr>
-
-            @if (isset($word))
-                @for ($i = 0; $i < count($word->usages); $i++)
-                    @include("update_form", ["index" => $i, "word" => $word])
-
-                    @if ($i != count($word->usages) - 1)
-                        <hr>
-                    @endif
-                @endfor
-            @else
-                @include("update_form", ["index" => 0])
-            @endif
+            <div id="word_contents">
+                @if (isset($word))
+                    @for ($i = 0; $i < count($word->usages); $i++)
+                        @include("update_form", ["index" => $i, "word" => $word])
+                    @endfor
+                @else
+                    @include("update_form", ["index" => 0])
+                @endif
+            </div>
         </form>
     </div>
 
@@ -76,23 +72,45 @@
                 return false;
             });
 
+            $(".delete_word_content").click(function () {
+                $(this).parent().remove();
+            });
+
             $(".add-platforms").click(function () {
-                // TODO: Platform 추가
+                var wordContent = $("#word_content").last().clone(true);
+
+                // 여러 개를 입력할 수 있는 경우에는, 하나만 남기고 모두 제거
+                wordContent.find("#examples:not(:first)").remove();
+                wordContent.find("#related_words:not(:first)").remove();
+                wordContent.find("#related_links:not(:first)").remove();
+
+                // '지우기' 버튼 활성화
+                wordContent.find(".delete_word_content").show();
+
+                // 값 초기화
+                wordContent.find("input,textarea").each(function (key, value) {
+                    value.value = "";
+                });
+
+                $("#word_contents").append(wordContent);
             });
 
             $(".add-examples").click(function () {
-                var index = $(this).data('index');
-                // TODO: 사용 예 추가
+                var example = $("#examples").last().clone(true);
+                example.text("");
+                $(this).before(example);
             });
 
             $(".add-related_words").click(function () {
-                var index = $(this).data('index');
-                // TODO: 관련 단어 추가
+                var relatedWord = $("#related_words").last().clone(true);
+                relatedWord.children().val("");
+                $(this).before(relatedWord);
             });
 
             $(".add-related_links").click(function () {
-                var index = $(this).data('index');
-                // TODO: 관련 링크 추가
+                var relatedLink = $("#related_links").last().clone(true);
+                relatedLink.val("");
+                $(this).before(relatedLink);
             });
         });
     </script>
