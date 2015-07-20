@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Words;
+use App\Util\Markdown\MarkdownUtil;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -29,7 +30,7 @@ class WebController extends BaseController
             return redirect('/');
         }
 
-        $published_htmls = $word->getPublishedHTMLs(true, $usages);
+        $published_htmls = $word->getPublishedHTMLs(MarkdownUtil::MARKDOWN_BY_PARSE_DOWN, true, $usages);
         return view('detail', ['word' => $query, 'usages' => $usages, 'published_htmls' => $published_htmls]);
     }
 
