@@ -19,9 +19,9 @@
 
     <div class="well">
         <form id="wordForm" action="/api/word/{{ isset($word) ? "edit" : "add" }}">
-            <div class="form-group">
+            <div class="form-group" id="title_group">
                 <label for="title">단어명(영어)</label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
+                <input type="text" class="form-control" id="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
             </div>
 
             <div id="word_contents">
@@ -60,14 +60,28 @@
 
             $(".btn-warning").click(function () {
                 if (confirm("관리자의 승인 후에 수정됩니다. 수정하시겠습니까?")) {
-                    // TODO: 수정 API 호출
+                    normalizeFormElementsName();
+
+                    $.post("/api/edit", $("#wordForm").serialize(), function () {
+//                        location.href = '/';
+                        alert('success');
+                    }).fail(function () {
+                        alert('fail');
+                    });
                 }
                 return false;
             });
 
             $(".btn-info").click(function () {
                 if (confirm("관리자의 승인 후에 추가됩니다. 추가하시겠습니까?")) {
-                    // TODO: 추가 API 호출
+                    normalizeFormElementsName();
+
+                    $.post("/api/add", $("#wordForm").serialize(), function () {
+//                        location.href = '/';
+                        alert('success');
+                    }).fail(function () {
+                        alert('fail');
+                    });
                 }
                 return false;
             });
@@ -112,6 +126,36 @@
                 relatedLink.val("");
                 $(this).before(relatedLink);
             });
+
+            function normalizeFormElementsName() {
+                $("#word_contents").children().each(function (index, word_content) {
+                    // 사용처 name 정규화
+                    $(this).find("div#usage_group input").attr("name", "usages[" + index + "]");
+
+                    // 한글표현 name 정규화
+                    $(this).find("div#kor_expressions_group input").attr("name", "kor_expressions[" + index + "]");
+
+                    // 사용 예 name 정규화
+                    $(this).find("div#examples_group textarea").each(function (j, textarea) {
+                        $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
+                    });
+
+                    // 관련단어 name 정규화
+                    $(this).find("div#related_words_group div#related_words").each(function (j, div) {
+                        $(this).find("input").each(function () {
+                            $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
+                        });
+                    });
+
+                    // 간략 설명 name 정규화
+                    $(this).find("div#summaries_group textarea").attr("name", "summaries[" + index + "]");
+
+                    // 관련 링크 name 정규화
+                    $(this).find("div#related_links_group input").each(function (j, input) {
+                        $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
+                    });
+                });
+            }
         });
     </script>
 @stop

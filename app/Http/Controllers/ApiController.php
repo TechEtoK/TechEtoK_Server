@@ -22,11 +22,19 @@ class ApiController extends BaseController
 
     public function addWord(Request $request)
     {
+        $values = $request->all();
+
         // TODO: 단어 추가
+
+        return response('', Response::HTTP_OK);
     }
 
     public function editWord(Request $request)
     {
+        $values = $request->all();
+
         // TODO: 단어 수정
+
+        return response('', Response::HTTP_OK);
     }
 }
