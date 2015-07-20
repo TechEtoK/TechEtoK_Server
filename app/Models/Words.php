@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Util\Markdown\MarkdownWords;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -51,6 +52,14 @@ final class Words extends Model
         return file_get_contents('http://words.techetok.kr/' . $this->file_name);
     }
 
+    /**
+     * @return MarkdownWords[]
+     */
+    public function getMarkdownObjects() {
+        $markdown = self::getMarkdownContent();
+        return new MarkdownWords($markdown);
+    }
+
     public function getPublishedHTMLs($separate_by_usage = false, &$usages = null) {
         $markdown = self::getMarkdownContent();
 
@@ -76,7 +85,7 @@ final class Words extends Model
 
         // 여기부터는 separate_by_usage가 true이므로, 사용처가 한 개일지라도 array로 반환한다.
 
-        $usage_count = preg_match_all('/사용처<\/h3>\s\s<p>(.*)<\/p>\s\s<h3>/', $html, $usages);
+        $usage_count = preg_match_all('/' . MarkdownWords::HEAD_USAGE . '<\/h3>\s\s<p>(.*)<\/p>\s\s<h3>/', $html, $usages);
         if ($usage_count <= 1) {
             return array($html);
         }

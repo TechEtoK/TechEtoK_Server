@@ -19,4 +19,14 @@ class ApiController extends BaseController
         $words = Words::searchWords($query);
         return response()->json(['words' => $words]);
     }
+
+    public function addWord(Request $request)
+    {
+        // TODO: 단어 추가
+    }
+
+    public function editWord(Request $request)
+    {
+        // TODO: 단어 수정
+    }
 }

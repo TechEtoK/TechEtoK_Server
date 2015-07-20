@@ -2,15 +2,46 @@
 
 @section("title")
     @if (isset($word))
-        {{ $word->word }} 수정 :: TechEtoK
+        {{ $word->title }} 수정 :: TechEtoK
     @else
         단어 추가 :: TechEtoK
     @endif
 @stop
 
 @section("content")
+    <h3>
+    @if (isset($word))
+        {{ $word->title }} 수정
+    @else
+        단어 추가
+    @endif
+    </h3>
+
     <div class="well">
-        {{--TODO: Input 박스들...--}}
+        <form action="/api/word/{{ isset($word) ? "edit" : "add" }}">
+            <div class="form-group">
+                <label for="title">단어명(영어)</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
+            </div>
+
+            <hr>
+
+            @if (isset($word))
+                @for ($i = 0; $i < count($word->usages); $i++)
+                    @include("update_form", ["index" => $i, "word" => $word])
+
+                    @if ($i != count($word->usages) - 1)
+                        <hr>
+                    @endif
+                @endfor
+            @else
+                @include("update_form", ["index" => 0])
+            @endif
+        </form>
+    </div>
+
+    <div class="add-platform">
+        <button type="button" class="btn btn-success add-platforms">플랫폼(언어) 추가하기</button>
     </div>
 
     <div class="form-actions">
@@ -43,6 +74,25 @@
                     // TODO: 추가 API 호출
                 }
                 return false;
+            });
+
+            $(".add-platforms").click(function () {
+                // TODO: Platform 추가
+            });
+
+            $(".add-examples").click(function () {
+                var index = $(this).data('index');
+                // TODO: 사용 예 추가
+            });
+
+            $(".add-related_words").click(function () {
+                var index = $(this).data('index');
+                // TODO: 관련 단어 추가
+            });
+
+            $(".add-related_links").click(function () {
+                var index = $(this).data('index');
+                // TODO: 관련 링크 추가
             });
         });
     </script>

@@ -42,6 +42,7 @@ class WebController extends BaseController
             if ($word === null) {
                 return response('Wrong parameters', Response::HTTP_BAD_REQUEST);
             }
+            $word = $word->getMarkdownObjects();
         } else {
             $word = null;
         }

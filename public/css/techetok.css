@@ -32,3 +32,11 @@ body > .container {
 code {
     font-size: 80%;
 }
+
+.add-platform {
+    margin-bottom: 20px;
+}
+
+.add-platform > button {
+    width: 100%;
+}
