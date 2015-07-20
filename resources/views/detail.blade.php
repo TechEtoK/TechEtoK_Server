@@ -5,7 +5,21 @@
 @stop
 
 @section("content")
-    {!! $published_html !!}
+    @if (count($published_htmls) > 1)
+        <ul class="nav nav-pills">
+            @for ($i = 0; $i < count($published_htmls); $i++)
+                <li role="presentation"><a href="#{{ $i }}">{{ $usages[$i] }}</a></li>
+            @endfor
+        </ul>
+    @endif
+
+    <div class="well-list">
+        @for ($i = 0; $i < count($published_htmls); $i++)
+            <div class="well" id="well{{ $i }}">
+                {!! $published_htmls[$i] !!}
+            </div>
+        @endfor
+    </div>
 
     <div class="form-actions">
         <button class="btn btn-primary">다시 검색하기</button>
