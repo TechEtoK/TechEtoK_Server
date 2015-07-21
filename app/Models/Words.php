@@ -15,7 +15,7 @@ final class Words extends Model
      */
     public static function getByWord($query)
     {
-        return Words::query()->where('word', '=', $query)->first();
+        return static::query()->where('word', '=', $query)->first();
     }
 
     /**

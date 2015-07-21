@@ -54,7 +54,7 @@ class MarkdownWords
             return false;
         }
 
-        $word = new MarkdownWords();
+        $word = new static();
 
         // 타이틀
         $title = trim($values['title']);
@@ -80,7 +80,10 @@ class MarkdownWords
 
             // 사용 예
             foreach ($values['examples'][$i] as $example) {
-                $word->examples[$i][] = trim($example);
+                $example = trim($example);
+                if (!empty($example)) {
+                    $word->examples[$i][] = $example;
+                }
             }
 
             // 관련 단어
@@ -98,7 +101,10 @@ class MarkdownWords
 
             // 관련 링크
             foreach ($values['related_links'][$i] as $related_link) {
-                $word->related_links[$i][] = trim($related_link);
+                $related_link = trim($related_link);
+                if (!empty($related_link)) {
+                    $word->related_links[$i][] = $related_link;
+                }
             }
         }
 
@@ -112,7 +118,7 @@ class MarkdownWords
      */
     public static function importMarkdown($markdown)
     {
-        $word = new MarkdownWords();
+        $word = new static();
         // 타이틀
         preg_match_all(self::REGEX_TITLE, $markdown, $title);
         $word->title = trim($title[1][0]);
