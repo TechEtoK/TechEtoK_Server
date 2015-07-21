@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Words;
+use App\Models\WordsTags;
 use App\Util\Markdown\MarkdownUtil;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -43,11 +44,13 @@ class WebController extends BaseController
             if ($word === null) {
                 return response('Wrong parameters', Response::HTTP_BAD_REQUEST);
             }
-            $word = $word->getMarkdownObjects();
+            $markdown_word = $word->getMarkdownObjects();
+            $word_tags = WordsTags::getByWord($word->id);
         } else {
-            $word = null;
+            $markdown_word = null;
+            $word_tags = null;
         }
 
-        return view('update', ['word' => $word]);
+        return view('update', ['word' => $markdown_word, 'tags' => $word_tags]);
     }
 }

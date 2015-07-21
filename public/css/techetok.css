@@ -61,6 +61,10 @@ input[id^="related_links"] {
     width: 100%;
 }
 
+input[id^="tags"] {
+    margin-bottom: 5px;
+}
+
 span.delete_word_content {
     display: none;
     float: right;

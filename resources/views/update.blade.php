@@ -38,6 +38,18 @@
                 <button type="button" class="btn btn-success add-platforms">플랫폼(언어) 추가하기</button>
             </div>
 
+            <div class="form-group" id="tag_group">
+                <label for="tags">태그 (검색 키워드)</label>
+                @if (isset($tags) && count($tags) > 0)
+                    @foreach ($tags as $tag)
+                        <input type="text" class="form-control" id="tags" placeholder="태그를 입력해주세요. (예. datasource)" value="{{ $tag->tag }}">
+                    @endforeach
+                @else
+                    <input type="text" class="form-control" id="tags" placeholder="태그를 입력해주세요. (예. datasource)">
+                @endif
+                <button type="button" class="btn btn-default add-tags">태그 추가하기</button>
+            </div>
+
             <div class="form-group" id="author_name_group">
                 <label for="author_name">작성자(이름)</label>
                 <input type="text" class="form-control" id="author_name" name="author_name" placeholder="이름을 입력해주세요.">
@@ -139,6 +151,12 @@
                 $(this).before(relatedLink);
             });
 
+            $(".add-tags").click(function () {
+                var tag = $("#tags").last().clone(true);
+                tag.val("");
+                $(this).before(tag);
+            });
+
             function normalizeFormElementsName() {
                 $("#word_contents").children().each(function (index, word_content) {
                     // 사용처 name 정규화
@@ -166,6 +184,9 @@
                     $(this).find("div#related_links_group input").each(function (j, input) {
                         $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
                     });
+
+                    // 태그 name 정규화
+                    $(this).find("div#tag_group input").attr("name", "tags[" + index + "]");
                 });
             }
         });

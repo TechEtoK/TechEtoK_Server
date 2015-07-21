@@ -16,7 +16,7 @@
 
     <div class="form-group" id="examples_group">
         <label for="examples">사용 예</label>
-        @if (isset($word))
+        @if (isset($word) and count($word->examples[$index]) > 0)
             @foreach ($word->examples[$index] as $example)
                 <textarea rows="3" class="form-control" id="examples" placeholder="사용 예를 입력해주세요. (예. The delegating object is typically a framework object, and the delegate is typically a custom controller object. (위임하는 객체는 보통 프레임워크 객체이고, 위임받는 객체는 보통 사용자 정의 컨트롤러 객체이다))">{{ $example }}</textarea>
             @endforeach
@@ -28,7 +28,7 @@
 
     <div class="form-group" id="related_words_group">
         <label for="related_words">관련 단어</label>
-        @if (isset($word))
+        @if (isset($word) and count($word->related_words[$index]) > 0)
             @foreach ($word->related_words[$index] as $related_word)
                 <div class="form-inline" id="related_words">
                     <input type="text" class="form-control" id="related_words_words" placeholder="관련 단어의 단어를 입력해주세요. (예. Data source)" value="{{ $related_word->word }}">
@@ -51,7 +51,7 @@
 
     <div class="form-group" id="related_links_group">
         <label for="related_links">관련 링크</label>
-        @if (isset($word))
+        @if (isset($word) and count($word->related_links[$index]) > 0)
             @foreach ($word->related_links[$index] as $related_link)
                 <input type="text" class="form-control" id="related_links" placeholder="관련 링크를 입력해주세요. (예. http://xiles.tistory.com/221)" value="{{ $related_link }}">
             @endforeach

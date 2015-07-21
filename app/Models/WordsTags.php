@@ -6,5 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 final class WordsTags extends Model
 {
-
+    /**
+     * @param $word_id
+     * @return WordsTags[]
+     */
+    public static function getByWord($word_id)
+    {
+        return static::query()->where('word_id', '=', $word_id)->get();
+    }
 }
