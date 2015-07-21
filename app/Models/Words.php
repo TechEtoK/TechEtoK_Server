@@ -50,7 +50,7 @@ final class Words extends Model
     }
 
     private function getMarkdownContent() {
-        return file_get_contents('http://words.techetok.kr/' . $this->file_name);
+        return file_get_contents(MarkdownWords::MARKDOWN_DIR . $this->file_name);
     }
 
     /**

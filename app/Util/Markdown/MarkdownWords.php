@@ -4,6 +4,8 @@ namespace App\Util\Markdown;
 
 class MarkdownWords
 {
+    const MARKDOWN_DIR = '/var/www/techetok_words/';
+
     // 타이틀
     const HEAD_USAGE            = '사용처';
     const HEAD_KOR_EXPRESSION   = '한글표현';
