@@ -58,7 +58,7 @@ final class Words extends Model
      */
     public function getMarkdownObjects() {
         $markdown = self::getMarkdownContent();
-        return new MarkdownWords($markdown);
+        return MarkdownWords::importMarkdown($markdown);
     }
 
     public function getPublishedHTMLs($markdown_by, $separate_by_usage = false, &$usages = null) {

@@ -4,8 +4,8 @@ namespace App\Util\Markdown;
 
 class RelatedWords
 {
-    public $word;
-    public $link;
+    public $word = null;
+    public $link = null;
 
     public function __construct($word, $link = null)
     {

@@ -23,6 +23,10 @@ class MarkdownWords
 
     // Github Markdown
     const MARK_LIST = '*';
+    const MARK_LINK_LIST_START = '* [';
+    const MARK_LINK_LIST_END = ']';
+    const MARK_LINK_START = '[';
+    const MARK_LINK_END = ']:';
     const MARK_BLOCKQUOTE = '>';
     const MARK_SEPARATOR = '---';
 
@@ -38,12 +42,78 @@ class MarkdownWords
     public $summaries = array();
     public $related_links = array();
 
-    // Markdown 텍스트를 받아서 MarkdownWords 객체로 만들어준다.
-    public function __construct($markdown)
+    /**
+     * @param $values
+     * @return MarkdownWords
+     */
+    public static function importValues($values)
     {
+        if (empty($values)) {
+            return false;
+        }
+
+        $word = new MarkdownWords();
+
+        // 타이틀
+        $title = trim($values['title']);
+        if (empty($title)) {
+            return false;
+        }
+        $word->title = $title;
+
+        for ($i = 0; $i < count($values['usages']); $i++) {
+            // 사용처
+            $usage = trim($values['usages'][$i]);
+            if (empty($usage)) {
+                return false;
+            }
+            $word->usages[] = $usage;
+
+            // 한글표현
+            $kor_expression = trim($values['kor_expressions'][$i]);
+            if (empty($kor_expression)) {
+                return false;
+            }
+            $word->kor_expressions[] = $kor_expression;
+
+            // 사용 예
+            foreach ($values['examples'][$i] as $example) {
+                $word->examples[$i][] = trim($example);
+            }
+
+            // 관련 단어
+            for ($j = 0; $j < count($values['related_words_words'][$i]); $j++) {
+                $related_words_word = trim($values['related_words_words'][$i][$j]);
+                $related_words_link = trim($values['related_words_links'][$i][$j]);
+                if (empty($related_words_link)) {
+                    $related_words_link = null;
+                }
+                $word->related_words[$i][] = new RelatedWords($related_words_word, $related_words_link);
+            }
+
+            // 간략 설명
+            $word->summaries[] =trim($values['summaries'][$i]);
+
+            // 관련 링크
+            foreach ($values['related_links'][$i] as $related_link) {
+                $word->related_links[$i][] = trim($related_link);
+            }
+        }
+
+        return $word;
+    }
+
+    /**
+     * Markdown 텍스트를 받아서 MarkdownWords 객체에 넣어준다.
+     * @param $markdown
+     * @return MarkdownWords
+     */
+    public static function importMarkdown($markdown)
+    {
+        $word = new MarkdownWords();
         // 타이틀
         preg_match_all(self::REGEX_TITLE, $markdown, $title);
-        $this->title = trim($title[1][0]);
+        $word->title = trim($title[1][0]);
         $markdown = substr($markdown, strlen($title[0][0]), strlen($markdown) - strlen($title[0][0]));
 
         $sub_markdowns = explode(self::MARK_SEPARATOR, $markdown);
@@ -52,11 +122,11 @@ class MarkdownWords
 
             // 사용처
             preg_match_all(self::REGEX_USAGE, $sub_markdown, $usage);
-            $this->usages[$i] = trim($usage[1][0]);
+            $word->usages[$i] = trim($usage[1][0]);
 
             // 한글표현
             preg_match_all(self::REGEX_KOR_EXPRESSION, $sub_markdown, $kor_expression);
-            $this->kor_expressions[$i] = trim($kor_expression[1][0]);
+            $word->kor_expressions[$i] = trim($kor_expression[1][0]);
 
             // 사용 예
             preg_match_all(self::REGEX_EXAMPLE, $sub_markdown, $examples);
@@ -65,7 +135,7 @@ class MarkdownWords
             foreach ($examples as $example) {
                 $example = trim($example);
                 if (!empty($example)) {
-                    $this->examples[$i][] = $example;
+                    $word->examples[$i][] = $example;
                 }
             }
 
@@ -78,19 +148,19 @@ class MarkdownWords
             $related_words_links['text'] = $related_words_links[1];
             $related_words_links['link'] = $related_words_links[2];
             foreach ($related_words_words as $related_words_word) {
-                $word = trim($related_words_word);
-                $link = null;
+                $related_words_word = trim($related_words_word);
+                $related_words_link = null;
 
-                $index = array_search($word, $related_words_links['text']);
+                $index = array_search($related_words_word, $related_words_links['text']);
                 if ($index !== false) {
-                    $link = trim($related_words_links['link'][$index]);
+                    $related_words_link = trim($related_words_links['link'][$index]);
                 }
-                $this->related_words[$i][] = new RelatedWords($word, $link);
+                $word->related_words[$i][] = new RelatedWords($related_words_word, $related_words_link);
             }
 
             // 간략 설명
             preg_match_all(self::REGEX_SUMMARY, $sub_markdown, $summary);
-            $this->summaries[$i] = trim($summary[1][0]);
+            $word->summaries[$i] = trim($summary[1][0]);
 
             // 관련 링크
             preg_match_all(self::REGEX_RELATED_LINK, $sub_markdown, $related_links);
@@ -99,9 +169,58 @@ class MarkdownWords
             foreach ($related_links as $related_link) {
                 $related_link = trim($related_link);
                 if (!empty($related_link)) {
-                    $this->related_links[$i][] = $related_link;
+                    $word->related_links[$i][] = $related_link;
                 }
             }
         }
+
+        return $word;
+    }
+
+    public function exportMarkdown()
+    {
+        // 타이틀
+        $markdown = '#' . $this->title . "\n";
+
+        for ($i = 0; $i < count($this->usages); $i++) {
+            // 사용처
+            $markdown .= "\n" . '### ' . self::HEAD_USAGE . "\n";
+            $markdown .= $this->usages[$i] . "\n";
+
+            // 한글표현
+            $markdown .= "\n" . '### ' . self::HEAD_KOR_EXPRESSION . "\n";
+            $markdown .= $this->kor_expressions[$i] . "\n";
+
+            // 사용 예
+            $markdown .= "\n" . '### ' . self::HEAD_EXAMPLE . "\n";
+            foreach ($this->examples[$i] as $example) {
+                $markdown .= self::MARK_BLOCKQUOTE . ' ' . $example . "\n\n";
+            }
+
+            // 관련 단어
+            $markdown .= "\n" . '### ' . self::HEAD_RELATED_WORD . "\n";
+            foreach ($this->related_words[$i] as $related_word) {
+                $markdown .= self::MARK_LINK_LIST_START . $related_word->word . self::MARK_LINK_LIST_END . "\n";
+                if ($related_word->link !== null) {
+                    $markdown .= self::MARK_LINK_START . $related_word->word . self::MARK_LINK_END .  $related_word->link . "\n";
+                }
+            }
+
+            // 간략 설명
+            $markdown .= "\n" . '### ' . self::HEAD_SUMMARY . "\n";
+            $markdown .= $this->summaries[$i] . "\n";
+
+            // 관련 링크
+            $markdown .= "\n" . '### ' . self::HEAD_RELATED_LINK . "\n";
+            foreach ($this->related_links[$i] as $related_link) {
+                $markdown .= self::MARK_LIST . ' ' . $related_link . "\n";
+            }
+
+            if ($i != count($this->usages) - 1) {
+                $markdown .= "\n" . self::MARK_SEPARATOR . "\n";
+            }
+        }
+
+        return $markdown;
     }
 }
