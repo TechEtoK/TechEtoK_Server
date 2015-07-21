@@ -45,12 +45,16 @@ input[id^="related_words_"] {
     width: 49% !important;
 }
 
+.add-related_words {
+    margin-bottom: 10px;
+}
+
 input[id^="related_links"] {
     margin-bottom: 5px;
 }
 
 .add-platform {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .add-platform > button {

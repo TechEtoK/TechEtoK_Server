@@ -20,8 +20,8 @@
     <div class="well">
         <form id="wordForm" action="/api/word/{{ isset($word) ? "edit" : "add" }}">
             <div class="form-group" id="title_group">
-                <label for="title">단어명(영어)</label>
-                <input type="text" class="form-control" id="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
+                <label for="title">단어명(영어)<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
             </div>
 
             <div id="word_contents">
@@ -33,11 +33,23 @@
                     @include("update_form", ["index" => 0])
                 @endif
             </div>
-        </form>
-    </div>
 
-    <div class="add-platform">
-        <button type="button" class="btn btn-success add-platforms">플랫폼(언어) 추가하기</button>
+            <div class="add-platform">
+                <button type="button" class="btn btn-success add-platforms">플랫폼(언어) 추가하기</button>
+            </div>
+
+            <div class="form-group" id="author_name_group">
+                <label for="author_name">작성자(이름)</label>
+                <input type="text" class="form-control" id="author_name" name="author_name" placeholder="이름을 입력해주세요.">
+            </div>
+
+            <div class="form-group" id="author_email_group">
+                <label for="author_email">이메일</label>
+                <input type="email" class="form-control" id="author_email" name="author_email" placeholder="이메일 주소를 입력해주세요.">
+            </div>
+        </form>
+
+        <span class="text-danger"><b>*</b>로 표시된건 필수로 입력해야하는 항목입니다.</span>
     </div>
 
     <div class="form-actions">
@@ -63,10 +75,10 @@
                     normalizeFormElementsName();
 
                     $.post("/api/edit", $("#wordForm").serialize(), function () {
-//                        location.href = '/';
-                        alert('success');
+                        alert("감사합니다 :)");
+                        location.href = "/";
                     }).fail(function () {
-                        alert('fail');
+                        alert("오류가 발생하였습니다! 다시 시도해주세요 :(");
                     });
                 }
                 return false;
@@ -77,10 +89,10 @@
                     normalizeFormElementsName();
 
                     $.post("/api/add", $("#wordForm").serialize(), function () {
-//                        location.href = '/';
-                        alert('success');
+                        alert("감사합니다 :)");
+                        location.href = "/";
                     }).fail(function () {
-                        alert('fail');
+                        alert("오류가 발생하였습니다! 다시 시도해주세요 :(");
                     });
                 }
                 return false;

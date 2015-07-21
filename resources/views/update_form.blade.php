@@ -5,12 +5,12 @@
     <hr>
 
     <div class="form-group" id="usage_group">
-        <label for="usages">사용처</label>
+        <label for="usages">사용처<span class="text-danger">*</span></label>
         <input type="text" class="form-control" id="usages" placeholder="사용처를 입력해주세요. (예. Cocoa, Cocoa Touch)" value="{{ $word->usages[$index] or "" }}">
     </div>
 
     <div class="form-group" id="kor_expressions_group">
-        <label for="kor_expressions">한글표현</label>
+        <label for="kor_expressions">한글표현<span class="text-danger">*</span></label>
         <input type="text" class="form-control" id="kor_expressions" placeholder="한글표현을 입력해주세요. (예. 위임자, 델리게이트)" value="{{ $word->kor_expressions[$index] or "" }}">
     </div>
 
@@ -45,7 +45,7 @@
     </div>
 
     <div class="form-group" id="summaries_group">
-        <label for="summaries">간략 설명</label>
+        <label for="summaries">간략 설명<span class="text-danger">*</span></label>
         <textarea rows="3" class="form-control" id="summaries" placeholder="간략 설명을 입력해주세요. (예. 다른 객체에 도움을 주기 위해 특정 행위를 위임받은 객체를 뜻한다)">{{ $word->summaries[$index] or "" }}</textarea>
     </div>
 
