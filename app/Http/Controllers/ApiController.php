@@ -88,6 +88,7 @@ class ApiController extends BaseController
 
         $word = MarkdownWords::importValues($values);
         if ($word === false) {
+            WordsUpdateLocks::setLock(false);
             return response('Wrong parameters', Response::HTTP_BAD_REQUEST);
         }
         $markdown = $word->exportMarkdown();
@@ -106,7 +107,6 @@ class ApiController extends BaseController
          */
 
         WordsUpdateLocks::setLock(false);
-
         return response('', Response::HTTP_OK);
     }
 }
