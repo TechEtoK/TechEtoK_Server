@@ -13,8 +13,11 @@ class CreateWordsUpdateLocksTable extends Migration
     public function up()
     {
         Schema::create('words_update_locks', function (Blueprint $table) {
-            $table->boolean('locked');
             $table->timestamps();
+
+            // new fields
+            $table->boolean('locked');
+            $table->index('locked');
         });
     }
 

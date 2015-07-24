@@ -20,7 +20,7 @@ class CreateWordsTagsTable extends Migration
             $table->unsignedInteger('word_id');
             $table->string('tag');
 
-            $table->unique(array('word_id', 'tag'));
+            $table->unique(['word_id', 'tag']);
             $table->index('tag');
         });
     }
