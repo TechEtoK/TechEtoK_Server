@@ -14,4 +14,9 @@ final class WordsTags extends Model
     {
         return static::query()->where('word_id', '=', $word_id)->get();
     }
+
+    public static function deleteByWord($word_id)
+    {
+        return static::query()->where('word_id', '=', $word_id)->delete() > 0;
+    }
 }

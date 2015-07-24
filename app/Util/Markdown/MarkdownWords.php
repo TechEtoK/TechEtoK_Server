@@ -231,4 +231,12 @@ class MarkdownWords
 
         return $markdown;
     }
+
+    public static function makeMarkdownFileName($word)
+    {
+        $file_name = strtolower($word);
+        $file_name = preg_replace('/\s+/', '_', $file_name);
+        $file_name .= '.md';
+        return $file_name;
+    }
 }
