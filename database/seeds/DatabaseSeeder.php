@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
 //        $this->call('WordsTableSeeder');
 //        $this->call('WordsTagsTableSeeder');
 //        $this->call('WordsUpdateLocksTableSeeder');
+//        $this->call('WordsAuthorsTableSeeder');
 
         Model::reguard();
     }
