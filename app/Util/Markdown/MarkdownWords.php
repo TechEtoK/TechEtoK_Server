@@ -201,16 +201,20 @@ class MarkdownWords
 
             // 사용 예
             $markdown .= "\n" . '### ' . self::HEAD_EXAMPLE . "\n";
-            foreach ($this->examples[$i] as $example) {
-                $markdown .= self::MARK_BLOCKQUOTE . ' ' . $example . "\n\n";
+            if (!empty($this->examples[$i])) {
+                foreach ($this->examples[$i] as $example) {
+                    $markdown .= self::MARK_BLOCKQUOTE . ' ' . $example . "\n\n";
+                }
             }
 
             // 관련 단어
             $markdown .= "\n" . '### ' . self::HEAD_RELATED_WORD . "\n";
-            foreach ($this->related_words[$i] as $related_word) {
-                $markdown .= self::MARK_LINK_LIST_START . $related_word->word . self::MARK_LINK_LIST_END . "\n";
-                if ($related_word->link !== null) {
-                    $markdown .= self::MARK_LINK_START . $related_word->word . self::MARK_LINK_END .  $related_word->link . "\n";
+            if (!empty($this->related_words[$i])) {
+                foreach ($this->related_words[$i] as $related_word) {
+                    $markdown .= self::MARK_LINK_LIST_START . $related_word->word . self::MARK_LINK_LIST_END . "\n";
+                    if ($related_word->link !== null) {
+                        $markdown .= self::MARK_LINK_START . $related_word->word . self::MARK_LINK_END . $related_word->link . "\n";
+                    }
                 }
             }
 
@@ -220,8 +224,10 @@ class MarkdownWords
 
             // 관련 링크
             $markdown .= "\n" . '### ' . self::HEAD_RELATED_LINK . "\n";
-            foreach ($this->related_links[$i] as $related_link) {
-                $markdown .= self::MARK_LIST . ' ' . $related_link . "\n";
+            if (!empty($this->related_links[$i])) {
+                foreach ($this->related_links[$i] as $related_link) {
+                    $markdown .= self::MARK_LIST . ' ' . $related_link . "\n";
+                }
             }
 
             if ($i != count($this->usages) - 1) {
