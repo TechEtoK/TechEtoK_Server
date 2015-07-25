@@ -38,19 +38,17 @@ class WebController extends BaseController
     public function update(Request $request)
     {
         $query = $request->input('word', null);
-        if (!empty($query)) {
-            $query = urldecode($query);
-            $word = Words::getByWord($query);
-            if ($word === null) {
-                return response('Wrong parameters', Response::HTTP_BAD_REQUEST);
-            }
-            $markdown_word = $word->getMarkdownObjects();
-            $word_tags = WordsTags::getByWord($word->id);
-        } else {
+
+        $query = urldecode($query);
+        $word = Words::getByWord($query);
+        if ($word === null) {
             $markdown_word = null;
             $word_tags = null;
+        } else {
+            $markdown_word = $word->getMarkdownObjects();
+            $word_tags = WordsTags::getByWord($word->id);
         }
 
-        return view('update', ['word' => $markdown_word, 'tags' => $word_tags]);
+        return view('update', ['query' => $query, 'word' => $markdown_word, 'tags' => $word_tags]);
     }
 }

@@ -21,7 +21,7 @@
         <form id="wordForm" action="/api/word/{{ isset($word) ? "edit" : "add" }}">
             <div class="form-group" id="title_group">
                 <label for="title">단어명(영어)<span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="title" name="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "" !!}>
+                <input type="text" class="form-control" id="title" name="title" placeholder="단어명을 입력해주세요. (예. Delegate)" {!! isset($word->title) ? "value='" . $word->title . "' readonly" : "value='" . $query . "'" !!}>
             </div>
 
             <div id="word_contents">
