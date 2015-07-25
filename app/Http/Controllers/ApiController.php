@@ -219,9 +219,7 @@ class ApiController extends BaseController
             $db_transaction_began = true;
 
             // 태그 삭제 후 다시 추가
-            if (!WordsTags::deleteByWord($word->id)) {
-                throw new Exception('기존 태그를 삭제하는 도중 오류가 발생하였습니다.');
-            }
+            WordsTags::deleteByWord($word->id);
             // 단어 태그 추가
             foreach ($values['tags'] as $tag) {
                 if (empty($tag)) {
