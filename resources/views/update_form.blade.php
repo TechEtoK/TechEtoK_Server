@@ -4,7 +4,7 @@
     <span class="delete_word_content"><i class="glyphicon glyphicon-trash"></i> 지우기</span>
     <hr>
 
-    <div class="form-group" id="usage_group">
+    <div class="form-group" id="usages_group">
         <label for="usages">사용처<span class="text-danger">*</span></label>
         <input type="text" class="form-control" id="usages" placeholder="사용처를 입력해주세요. (예. Cocoa, Cocoa Touch)" value="{{ $word->usages[$index] or "" }}">
     </div>

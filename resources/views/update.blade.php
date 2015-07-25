@@ -38,7 +38,7 @@
                 <button type="button" class="btn btn-success add-platforms">플랫폼(언어) 추가하기</button>
             </div>
 
-            <div class="form-group" id="tag_group">
+            <div class="form-group" id="tags_group">
                 <label for="tags">태그 (검색 키워드)</label>
                 @if (isset($tags) && count($tags) > 0)
                     @foreach ($tags as $tag)
@@ -89,8 +89,14 @@
                     $.post("/api/edit", $("#wordForm").serialize(), function () {
                         alert("감사합니다 :)");
                         location.href = "/";
-                    }).fail(function () {
-                        alert("오류가 발생하였습니다! 다시 시도해주세요 :(");
+                    }).fail(function (xhr) {
+                        if (xhr.status == 503) {    // HTTP_SERVICE_UNAVAILABLE
+                            alert("이미 다른 추가/수정 작업 중입니다. 잠시 후에 다시 시도해주세요!");
+                        } else if (xhr.status == 400) { // HTTP_BAD_REQUEST
+                            alert("필수 입력 항목을 모두 입력해주셔야 합니다.");
+                        } else {
+                            alert("오류가 발생하였습니다 :( 다시 시도해주세요!");
+                        }
                     });
                 }
                 return false;
@@ -103,8 +109,14 @@
                     $.post("/api/add", $("#wordForm").serialize(), function () {
                         alert("감사합니다 :)");
                         location.href = "/";
-                    }).fail(function () {
-                        alert("오류가 발생하였습니다! 다시 시도해주세요 :(");
+                    }).fail(function (xhr) {
+                        if (xhr.status == 503) {    // HTTP_SERVICE_UNAVAILABLE
+                            alert("이미 다른 추가/수정 작업 중입니다. 잠시 후에 다시 시도해주세요!");
+                        } else if (xhr.status == 400) { // HTTP_BAD_REQUEST
+                            alert("필수 입력 항목을 모두 입력해주셔야 합니다.");
+                        } else {
+                            alert("오류가 발생하였습니다 :( 다시 시도해주세요!");
+                        }
                     });
                 }
                 return false;
@@ -160,7 +172,7 @@
             function normalizeFormElementsName() {
                 $("#word_contents").children().each(function (index, word_content) {
                     // 사용처 name 정규화
-                    $(this).find("div#usage_group input").attr("name", "usages[" + index + "]");
+                    $(this).find("div#usages_group input").attr("name", "usages[" + index + "]");
 
                     // 한글표현 name 정규화
                     $(this).find("div#kor_expressions_group input").attr("name", "kor_expressions[" + index + "]");
@@ -184,9 +196,11 @@
                     $(this).find("div#related_links_group input").each(function (j, input) {
                         $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
                     });
+                });
 
-                    // 태그 name 정규화
-                    $(this).find("div#tag_group input").attr("name", "tags[" + index + "]");
+                // 태그 (검색 키워드) name 정규화
+                $("div#tags_group input").each(function (index, tag_input) {
+                    $(this).attr("name", "tags[" + index + "]");
                 });
             }
         });
