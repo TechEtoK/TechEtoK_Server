@@ -157,11 +157,16 @@ class MarkdownWords
             $related_words_links['link'] = $related_words_links[2];
             foreach ($related_words_words as $related_words_word) {
                 $related_words_word = trim($related_words_word);
+                if (empty($related_words_word)) {
+                    continue;
+                }
+
                 $related_words_link = null;
 
                 $index = array_search($related_words_word, $related_words_links['text']);
                 if ($index !== false) {
-                    $related_words_link = trim($related_words_links['link'][$index]);
+                    $related_words_link = $related_words_links['link'][$index];
+                    $related_words_link = preg_replace('/\s+/', '', $related_words_link);   // 링크에는 공백이 들어가면 안된다.
                 }
                 $word->related_words[$i][] = new RelatedWords($related_words_word, $related_words_link);
             }
@@ -175,7 +180,7 @@ class MarkdownWords
             $related_links = $related_links[1][0];
             $related_links = explode(self::MARK_LIST, $related_links);
             foreach ($related_links as $related_link) {
-                $related_link = trim($related_link);
+                $related_link = preg_replace('/\s+/', '', $related_link);   // 링크에는 공백이 들어가면 안된다.
                 if (!empty($related_link)) {
                     $word->related_links[$i][] = $related_link;
                 }
@@ -210,10 +215,23 @@ class MarkdownWords
             // 관련 단어
             $markdown .= "\n" . '### ' . self::HEAD_RELATED_WORD . "\n";
             if (!empty($this->related_words[$i])) {
+                $related_words_link_empty = true;
+
+                // 관련 단어 - 단어
                 foreach ($this->related_words[$i] as $related_word) {
                     $markdown .= self::MARK_LINK_LIST_START . $related_word->word . self::MARK_LINK_LIST_END . "\n";
-                    if ($related_word->link !== null) {
-                        $markdown .= self::MARK_LINK_START . $related_word->word . self::MARK_LINK_END . $related_word->link . "\n";
+                    if ($related_word->link !== null && $related_words_link_empty) {
+                        $related_words_link_empty = false;
+                    }
+                }
+
+                // 관련 단어 - 링크
+                if (!$related_words_link_empty) {
+                    $markdown .= "\n";
+                    foreach ($this->related_words[$i] as $related_word) {
+                        if ($related_word->link !== null) {
+                            $markdown .= self::MARK_LINK_START . $related_word->word . self::MARK_LINK_END . $related_word->link . "\n";
+                        }
                     }
                 }
             }

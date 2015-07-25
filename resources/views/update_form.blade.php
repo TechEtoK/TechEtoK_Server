@@ -32,13 +32,13 @@
             @foreach ($word->related_words[$index] as $related_word)
                 <div class="form-inline" id="related_words">
                     <input type="text" class="form-control" id="related_words_words" placeholder="관련 단어의 단어를 입력해주세요. (예. Data source)" value="{{ $related_word->word }}">
-                    <input type="text" class="form-control" id="related_words_links" placeholder="관련 단어의 링크를 입력해주세요. (예. https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/CreatingCellsandViews/CreatingCellsandViews.html)" value="{{ $related_word->link or "" }}">
+                    <input type="url" class="form-control" id="related_words_links" placeholder="관련 단어의 링크를 입력해주세요. (예. https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/CreatingCellsandViews/CreatingCellsandViews.html)" value="{{ $related_word->link or "" }}">
                 </div>
             @endforeach
         @else
             <div class="form-inline" id="related_words">
                 <input type="text" class="form-control" id="related_words_words" placeholder="관련 단어의 단어를 입력해주세요. (예. Data source)">
-                <input type="text" class="form-control" id="related_words_links" placeholder="관련 단어의 링크를 입력해주세요. (예. https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/CreatingCellsandViews/CreatingCellsandViews.html)">
+                <input type="url" class="form-control" id="related_words_links" placeholder="관련 단어의 링크를 입력해주세요. (예. https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/CreatingCellsandViews/CreatingCellsandViews.html)">
             </div>
         @endif
         <button type="button" class="btn btn-default add-related_words">관련 단어 추가하기</button>
@@ -53,10 +53,10 @@
         <label for="related_links">관련 링크</label>
         @if (isset($word) and count($word->related_links[$index]) > 0)
             @foreach ($word->related_links[$index] as $related_link)
-                <input type="text" class="form-control" id="related_links" placeholder="관련 링크를 입력해주세요. (예. http://xiles.tistory.com/221)" value="{{ $related_link }}">
+                <input type="url" class="form-control" id="related_links" placeholder="관련 링크를 입력해주세요. (예. http://xiles.tistory.com/221)" value="{{ $related_link }}">
             @endforeach
         @else
-            <input type="text" class="form-control" id="related_links" placeholder="관련 링크를 입력해주세요. (예. http://xiles.tistory.com/221)">
+            <input type="url" class="form-control" id="related_links" placeholder="관련 링크를 입력해주세요. (예. http://xiles.tistory.com/221)">
         @endif
         <button type="button" class="btn btn-default add-related_links">관련 링크 추가하기</button>
     </div>
