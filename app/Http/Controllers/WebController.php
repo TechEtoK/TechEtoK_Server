@@ -23,16 +23,16 @@ class WebController extends BaseController
         return view('index', ['query' => $query, 'words' => $words]);
     }
 
-    public function detail($word)
+    public function detail($query)
     {
-        $query = urldecode($word);
+        $query = urldecode($query);
         $word = Words::getByWord($query);
         if ($word === null) {
-            return redirect('/');
+            return view('not_found', ['query' => $query]);
         }
 
         $published_htmls = $word->getPublishedHTMLs(MarkdownUtil::MARKDOWN_BY_PARSE_DOWN, true, $usages);
-        return view('detail', ['word' => $query, 'usages' => $usages, 'published_htmls' => $published_htmls]);
+        return view('detail', ['word' => $word->word, 'usages' => $usages, 'published_htmls' => $published_htmls]);
     }
 
     public function update(Request $request)
