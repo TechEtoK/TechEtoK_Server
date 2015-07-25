@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 final class Words extends Model
 {
+    protected $fillable = ['word', 'file_name'];
+
     /**
      * @param $query
      * @return Words

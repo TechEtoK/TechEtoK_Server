@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 final class WordsTags extends Model
 {
+    protected $fillable = ['word_id', 'tag'];
+
     /**
      * @param $word_id
      * @return WordsTags[]
