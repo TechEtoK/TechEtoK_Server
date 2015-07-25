@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Util\Markdown\MarkdownUtil;
 use App\Util\Markdown\MarkdownWords;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 final class Words extends Model
@@ -26,27 +27,29 @@ final class Words extends Model
      */
     public static function searchWords($query)
     {
-        // TODO: Cache 적용 (CacheKey = query);
-        // TODO: Eloquent ORM으로 변경해야함.
-        $words = DB::table('words')->whereIn('id', function($q) use ($query) {
-            $q->select('word_id')
-                ->from('words_tags')
-                ->where('tag', 'LIKE', '%' . $query . '%')
-                ->groupBy('word_id');
-        })->orWhere('word', 'LIKE', '%' . $query . '%')->get();
+        $words = Cache::remember('search_' . $query, 10, function() use ($query) {
+            // TODO: Eloquent ORM으로 변경해야함.
+            $words = DB::table('words')->whereIn('id', function($q) use ($query) {
+                $q->select('word_id')
+                    ->from('words_tags')
+                    ->where('tag', 'LIKE', '%' . $query . '%')
+                    ->groupBy('word_id');
+            })->orWhere('word', 'LIKE', '%' . $query . '%')->get();
 
-        // 검색 키워드와의 유사성에 따른 정렬
-        foreach ($words as &$word) {
-            $percent = 0;
-            similar_text(strtolower($query), strtolower($word->word), $percent);
-            $word->similar_percent = $percent;
-        }
-        usort($words, function ($l_word, $r_word) {
-            if ($l_word->similar_percent == $r_word->similar_percent) {
-                return 0;
+            // 검색 키워드와의 유사성에 따른 정렬
+            foreach ($words as &$word) {
+                $percent = 0;
+                similar_text(strtolower($query), strtolower($word->word), $percent);
+                $word->similar_percent = $percent;
             }
-            // 내림차순 정렬
-            return ($l_word->similar_percent < $r_word->similar_percent) ? 1 : -1;
+            usort($words, function ($l_word, $r_word) {
+                if ($l_word->similar_percent == $r_word->similar_percent) {
+                    return 0;
+                }
+                // 내림차순 정렬
+                return ($l_word->similar_percent < $r_word->similar_percent) ? 1 : -1;
+            });
+            return $words;
         });
         return $words;
     }
