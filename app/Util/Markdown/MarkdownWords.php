@@ -89,7 +89,7 @@ class MarkdownWords
             // 관련 단어
             for ($j = 0; $j < count($values['related_words_words'][$i]); $j++) {
                 $related_words_word = trim($values['related_words_words'][$i][$j]);
-                $related_words_link = trim($values['related_words_links'][$i][$j]);
+                $related_words_link = preg_replace('/\s+/', '', $values['related_words_links'][$i][$j]);   // 링크에는 공백이 들어가면 안된다.
                 if (empty($related_words_link)) {
                     $related_words_link = null;
                 }
@@ -101,7 +101,7 @@ class MarkdownWords
 
             // 관련 링크
             foreach ($values['related_links'][$i] as $related_link) {
-                $related_link = trim($related_link);
+                $related_link = preg_replace('/\s+/', '', $related_link);   // 링크에는 공백이 들어가면 안된다.
                 if (!empty($related_link)) {
                     $word->related_links[$i][] = $related_link;
                 }
@@ -210,10 +210,12 @@ class MarkdownWords
                 foreach ($this->examples[$i] as $example) {
                     $markdown .= self::MARK_BLOCKQUOTE . ' ' . $example . "\n\n";
                 }
+            } else {
+                $markdown .= "\n";
             }
 
             // 관련 단어
-            $markdown .= "\n" . '### ' . self::HEAD_RELATED_WORD . "\n";
+            $markdown .= '### ' . self::HEAD_RELATED_WORD . "\n";
             if (!empty($this->related_words[$i])) {
                 $related_words_link_empty = true;
 
