@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Words;
+use App\Models\WordsAuthors;
 use App\Models\WordsTags;
 use App\Models\WordsUpdateLocks;
+use App\Util\Github\GithubUtil;
 use App\Util\Markdown\MarkdownWords;
 use Exception;
 use Illuminate\Http\Request;
@@ -46,12 +48,13 @@ class ApiController extends BaseController
         $md_file_name = MarkdownWords::makeMarkdownFileName($markdown_word->title);
         $md_file_path = MarkdownWords::MARKDOWN_DIR . $md_file_name;
 
-        $db_transaction_began = false;
+        // Git 경로
+        $git_path = MarkdownWords::MARKDOWN_DIR;
+        $git_branch_name = GithubUtil::makeBranchName($markdown_word->title, GithubUtil::BRANCH_TYPE_ADDED);
 
+        $git_checkoutted = $db_transaction_began = $git_pushed = false;
         try {
-            // TODO: 1. Git 브랜치 생성 + 체크아웃
-
-            // 2. 단어 파일 생성
+            // 1. 단어 파일 생성
             if (file_exists($md_file_path)) {
                 throw new Exception('이미 존재하는 파일입니다.');
             }
@@ -67,29 +70,65 @@ class ApiController extends BaseController
             }
             fclose($md_file);
 
-            // TODO: 3. Git 커밋
+            // 2. Git Checkout
+            if (!GithubUtil::checkout($git_path, $git_branch_name)) {
+                throw new Exception('Git Checkout 실패');
+            }
+            $git_checkoutted = true;
+
+            // 3. Git Commit
+            if (!GithubUtil::addCommit($git_path, GithubUtil::BRANCH_TYPE_ADDED, $markdown_word->title)) {
+                throw new Exception('Git Add & Commit 실패');
+            }
+            $commit_id = GithubUtil::getLastShortCommitID($git_path);
 
             // 4. 단어 DB 관련 작업
             DB::beginTransaction();
             $db_transaction_began = true;
 
             // 단어 DB 추가
-            $word = Words::create(['word' => $markdown_word->title, 'file_name' => $md_file_name]);
-            if ($word === null) {
-                throw new Exception('단어를 생성하는 도중 오류가 발생하였습니다.');
-            }
+            $word = Words::create([
+                'word' => $markdown_word->title,
+                'file_name' => $md_file_name
+            ]);
 
             // 단어 태그 추가
             foreach ($values['tags'] as $tag) {
-                $tag = WordsTags::create(['word_id' => $word->id, 'tag' => $tag]);
-                if ($tag === null) {
-                    throw new Exception('단어 태그를 생성하는 도중 오류가 발생하였습니다.');
+                if (empty($tag)) {
+                    continue;
                 }
+
+                WordsTags::create([
+                    'word_id' => $word->id,
+                    'tag' => $tag
+                ]);
             }
 
-            // TODO: 작성자 추가
+            // 작성자 추가
+            $author_name = empty($values['author_name']) ? '' : trim($values['author_name']);
+            $author_email = empty($values['author_email']) ? '' : trim($values['author_email']);
+            WordsAuthors::create([
+                'word_id' => $word->id,
+                'name' => $author_name,
+                'email' => $author_email,
+                'commit' => $commit_id
+            ]);
 
-            // TODO: 5. Git Push & Pull-Request
+            // 5. Git Push
+            if (!GithubUtil::push($git_path, $git_branch_name)) {
+                throw new Exception('Git Push 실패');
+            }
+            $git_pushed = true;
+
+            // 6. Git Pull-Request
+            if (!GithubUtil::pullRequest($git_path, GithubUtil::BRANCH_TYPE_ADDED, $word->word)) {
+                throw new Exception('Git Pull-request 실패');
+            }
+
+            // 7. Git Checkout to master
+            if (!GithubUtil::checkoutToMaster($git_path)) {
+                throw new Exception('Git Checkout master 실패');
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -97,7 +136,14 @@ class ApiController extends BaseController
                 DB::rollback();
             }
 
-            // TODO: Git strip(Reset)
+            if ($git_pushed) {
+                GithubUtil::checkoutToMaster($git_path);
+                GithubUtil::deleteRemoteBranch($git_path, $git_branch_name);
+                GithubUtil::deleteLocalBranch($git_path, $git_branch_name);
+            } else if ($git_checkoutted) {
+                GithubUtil::checkoutToMaster($git_path);
+                GithubUtil::deleteLocalBranch($git_path, $git_branch_name);
+            }
 
             WordsUpdateLocks::setLock(false);
             return response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -133,17 +179,18 @@ class ApiController extends BaseController
         $md_file_name = MarkdownWords::makeMarkdownFileName($markdown_word->title);
         $md_file_path = MarkdownWords::MARKDOWN_DIR . $md_file_name;
 
-        $db_transaction_began = false;
+        // Git 경로
+        $git_path = MarkdownWords::MARKDOWN_DIR;
+        $git_branch_name = GithubUtil::makeBranchName($markdown_word->title, GithubUtil::BRANCH_TYPE_MODIFIED);
 
+        $git_checkoutted = $db_transaction_began = $git_pushed = false;
         try {
-            // TODO: 1. Git 브랜치 생성 + 체크아웃
-
-            // 2. 원본 파일 삭제
+            // 1. 원본 파일 삭제
             if (!unlink($md_file_path)) {
                 throw new Exception('원본 파일을 삭제하지 못했습니다.');
             }
 
-            // 3. 단어 파일 생성
+            // 2. 단어 파일 생성
             $md_file = fopen($md_file_path, 'w');
             if ($md_file === false) {
                 fclose($md_file);
@@ -155,7 +202,17 @@ class ApiController extends BaseController
             }
             fclose($md_file);
 
-            // TODO: 4. Git 커밋
+            // 3. Git Checkout
+            if (!GithubUtil::checkout($git_path, $git_branch_name)) {
+                throw new Exception('Git Checkout 실패');
+            }
+            $git_checkoutted = true;
+
+            // 4. Git Commit
+            if (!GithubUtil::addCommit($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, $markdown_word->title)) {
+                throw new Exception('Git Add & Commit 실패');
+            }
+            $commit_id = GithubUtil::getLastShortCommitID($git_path);
 
             // 5. 단어 DB 관련 작업
             DB::beginTransaction();
@@ -165,16 +222,43 @@ class ApiController extends BaseController
             if (!WordsTags::deleteByWord($word->id)) {
                 throw new Exception('기존 태그를 삭제하는 도중 오류가 발생하였습니다.');
             }
+            // 단어 태그 추가
             foreach ($values['tags'] as $tag) {
-                $tag = WordsTags::create(['word_id' => $word->id, 'tag' => $tag]);
-                if ($tag === null) {
-                    throw new Exception('단어 태그를 생성하는 도중 오류가 발생하였습니다.');
+                if (empty($tag)) {
+                    continue;
                 }
+
+                WordsTags::create([
+                    'word_id' => $word->id,
+                    'tag' => $tag
+                ]);
             }
 
-            // TODO: 작성자 추가
+            // 작성자 추가
+            $author_name = empty($values['author_name']) ? '' : trim($values['author_name']);
+            $author_email = empty($values['author_email']) ? '' : trim($values['author_email']);
+            WordsAuthors::create([
+                'word_id' => $word->id,
+                'name' => $author_name,
+                'email' => $author_email,
+                'commit' => $commit_id
+            ]);
 
-            // TODO: 6. Git Push & Pull-Request
+            // 6. Git Push
+            if (!GithubUtil::push($git_path, $git_branch_name)) {
+                throw new Exception('Git Push 실패');
+            }
+            $git_pushed = true;
+
+            // 7. Git Pull-Request
+            if (!GithubUtil::pullRequest($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, $word->word)) {
+                throw new Exception('Git Pull-request 실패');
+            }
+
+            // 8. Git Checkout to master
+            if (!GithubUtil::checkoutToMaster($git_path)) {
+                throw new Exception('Git Checkout master 실패');
+            }
 
             DB::commit();
         } catch (Exception $e) {
@@ -182,7 +266,11 @@ class ApiController extends BaseController
                 DB::rollback();
             }
 
-            // TODO: Git strip(Reset)
+            if ($git_pushed) {
+                static::rollbackGithubWhileSuccess($git_path, $git_branch_name, true);
+            } else if ($git_checkoutted) {
+                static::rollbackGithubWhileSuccess($git_path, $git_branch_name, false);
+            }
 
             WordsUpdateLocks::setLock(false);
             return response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -190,5 +278,48 @@ class ApiController extends BaseController
 
         WordsUpdateLocks::setLock(false);
         return response('단어를 수정했습니다.', Response::HTTP_OK);
+    }
+
+    // Github 관련 롤백이 성공할 때까지 롤백을 시도한다.
+    private static function rollbackGithubWhileSuccess($git_path, $git_branch_name, $delete_remote_branch = false)
+    {
+        static $max_try_to_rollback = 10;   // 최대 롤백 시도 횟수
+
+        $checkout_master_result = $delete_remote_result = $delete_local_result = false;
+        for ($i = 0; $i < $max_try_to_rollback; $i++) {
+            // master 브랜치로 체크아웃
+            if ($checkout_master_result === false) {
+                $checkout_master_result = GithubUtil::checkoutToMaster($git_path);
+                if ($checkout_master_result === false) {
+                    continue;
+                }
+            }
+
+            // 원격 branch 삭제
+            if ($delete_remote_branch && $delete_remote_result === false) {
+                $delete_remote_result = GithubUtil::deleteRemoteBranch($git_path, $git_branch_name);
+                if ($delete_remote_result === false) {
+                    continue;
+                }
+            }
+
+            // 로컬 branch 삭제
+            if ($delete_local_result === false) {
+                $delete_local_result = GithubUtil::deleteLocalBranch($git_path, $git_branch_name);
+                if ($delete_local_result === false) {
+                    continue;
+                }
+            }
+
+            // 모두 성공하면 return
+            if ($checkout_master_result
+                && (!$delete_remote_branch || $delete_remote_result)
+                && $delete_local_result) {
+                return;
+            }
+        }
+
+        // 실패시, Sentry에 에러를 보낸다.
+        // TODO: Sentry
     }
 }
