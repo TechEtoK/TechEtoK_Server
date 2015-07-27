@@ -16,11 +16,11 @@ class MarkdownWords
 
     // 내용을 뽑기 위한 정규식
     const REGEX_TITLE           = '/^\#(.*)\s/';
-    const REGEX_USAGE           = '/\#{3} ' . self::HEAD_USAGE  . '(.*)\#{3} '. self::HEAD_KOR_EXPRESSION . '/s';
-    const REGEX_KOR_EXPRESSION  = '/\#{3} ' . self::HEAD_KOR_EXPRESSION  . '(.*)\#{3} '. self::HEAD_EXAMPLE . '/s';
-    const REGEX_EXAMPLE         = '/\#{3} ' . self::HEAD_EXAMPLE  . '(.*)\#{3} '. self::HEAD_RELATED_WORD . '/s';
-    const REGEX_RELATED_WORD    = '/\#{3} ' . self::HEAD_RELATED_WORD  . '(.*)\#{3} '. self::HEAD_SUMMARY . '/s';
-    const REGEX_SUMMARY         = '/\#{3} ' . self::HEAD_SUMMARY  . '(.*)\#{3} '. self::HEAD_RELATED_LINK . '/s';
+    const REGEX_USAGE           = '/\#{3} ' . self::HEAD_USAGE  . '(.*)\#{3} ' . self::HEAD_KOR_EXPRESSION . '/s';
+    const REGEX_KOR_EXPRESSION  = '/\#{3} ' . self::HEAD_KOR_EXPRESSION  . '(.*)\#{3} ' . self::HEAD_EXAMPLE . '/s';
+    const REGEX_EXAMPLE         = '/\#{3} ' . self::HEAD_EXAMPLE  . '(.*)\#{3} ' . self::HEAD_RELATED_WORD . '/s';
+    const REGEX_RELATED_WORD    = '/\#{3} ' . self::HEAD_RELATED_WORD  . '(.*)\#{3} ' . self::HEAD_SUMMARY . '/s';
+    const REGEX_SUMMARY         = '/\#{3} ' . self::HEAD_SUMMARY  . '(.*)\#{3} ' . self::HEAD_RELATED_LINK . '/s';
     const REGEX_RELATED_LINK    = '/\#{3} ' . self::HEAD_RELATED_LINK  . '(.*)/s';
 
     // Github Markdown
