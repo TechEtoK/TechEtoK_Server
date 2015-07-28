@@ -16,29 +16,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class ApiController extends BaseController
 {
-    public function test()
-    {
-        $git_path = MarkdownWords::MARKDOWN_DIR;
-        $branch_name = GithubUtil::makeBranchName('Delegate', GithubUtil::BRANCH_TYPE_MODIFIED);
-
-        $result = GithubUtil::checkout($git_path, $branch_name);
-        echo 'CheckoutResult: ' . $result . '<br /><br />';
-
-        $result = GithubUtil::addCommit($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, 'Delegate');
-        echo 'AddCommitResult: ' . $result . '<br /><br />';
-
-        $result = GithubUtil::push($git_path, $branch_name);
-        echo 'PushResult: ' . $result . '<br /><br />';
-
-        $result = GithubUtil::pullRequest($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, 'Delegate');
-        echo 'PullRequestResult: ' . $result . '<br /><br />';
-
-        $result = GithubUtil::checkoutToMaster($git_path);
-        echo 'CheckoutMasterResult: ' . $result;
-
-        return '';
-    }
-
     public function search(Request $request)
     {
         $query = $request->input('q', null);
