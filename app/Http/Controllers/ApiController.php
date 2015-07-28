@@ -137,12 +137,11 @@ class ApiController extends BaseController
             }
 
             if ($git_pushed) {
-                GithubUtil::checkoutToMaster($git_path);
-                GithubUtil::deleteRemoteBranch($git_path, $git_branch_name);
-                GithubUtil::deleteLocalBranch($git_path, $git_branch_name);
+                static::rollbackGithubWhileSuccess($git_path, $git_branch_name, true);
             } else if ($git_checkoutted) {
-                GithubUtil::checkoutToMaster($git_path);
-                GithubUtil::deleteLocalBranch($git_path, $git_branch_name);
+                static::rollbackGithubWhileSuccess($git_path, $git_branch_name, false);
+            } else {
+                GithubUtil::undoChanges($git_path);
             }
 
             WordsUpdateLocks::setLock(false);
@@ -268,6 +267,8 @@ class ApiController extends BaseController
                 static::rollbackGithubWhileSuccess($git_path, $git_branch_name, true);
             } else if ($git_checkoutted) {
                 static::rollbackGithubWhileSuccess($git_path, $git_branch_name, false);
+            } else {
+                GithubUtil::undoChanges($git_path);
             }
 
             WordsUpdateLocks::setLock(false);

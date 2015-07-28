@@ -49,6 +49,11 @@ class GithubUtil
         return trim($output[0]) == 'Switched to branch \'master\'';
     }
 
+    public static function undoChanges($git_path)
+    {
+        exec('git -C ' . $git_path . ' checkout .');
+    }
+
     public static function deleteLocalBranch($git_path, $branch_name)
     {
         $last_line = exec('git -C ' . $git_path . ' branch -D ' . $branch_name);
