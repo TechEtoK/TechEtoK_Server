@@ -15,8 +15,8 @@ class GithubUtil
 
     public static function checkout($git_path, $branch_name)
     {
-        exec('git -C ' . $git_path . ' checkout -b ' . $branch_name . ' 2>&1', $output);
-        return trim($output[0]) == 'Switched to a new branch \'' . $branch_name . '\'';
+        $last_line = exec('git -C ' . $git_path . ' checkout -b ' . $branch_name . ' 2>&1');
+        return trim($last_line) =='Switched to a new branch \'' . $branch_name . '\'';
     }
 
     public static function addCommit($git_path, $branch_type, $word)
