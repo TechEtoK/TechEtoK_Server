@@ -15,14 +15,20 @@ class GithubUtil
 
     public static function checkout($git_path, $branch_name)
     {
-        exec('git -C ' . $git_path . ' checkout -b ' . $branch_name . ' 2>&1', $output);
+        $last_line = exec('git -C ' . $git_path . ' checkout -b ' . $branch_name . ' 2>&1', $output);
+        echo 'Checkout<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return trim($output[0]) =='Switched to a new branch \'' . $branch_name . '\'';
     }
 
     public static function addCommit($git_path, $branch_type, $word)
     {
         exec('git -C ' . $git_path . ' add .');
-        exec('git -C ' . $git_path . ' commit -m "' . $branch_type . ' ' . $word . '"', $output);
+        $last_line = exec('git -C ' . $git_path . ' commit -m "' . $branch_type . ' ' . $word . '"', $output);
+        echo 'AddCommit<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return static::startsWith(trim($output[1]), "1 file changed");
     }
 
@@ -33,31 +39,46 @@ class GithubUtil
 
     public static function push($git_path, $branch_name)
     {
-        $last_line = exec('git -C ' . $git_path . ' push origin ' . $branch_name . ' 2>&1');
+        $last_line = exec('git -C ' . $git_path . ' push origin ' . $branch_name . ' 2>&1', $output);
+        echo 'Push<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return trim($last_line) == '* [new branch]      ' . $branch_name . ' -> ' . $branch_name;
     }
 
     public static function pullRequest($git_path, $branch_type, $word)
     {
-        $last_line = exec('sudo ' . __DIR__ . '/pull-request.sh ' . $git_path . ' "' . $branch_type . ' ' . $word . '"');
+        $last_line = exec('sudo ' . __DIR__ . '/pull-request.sh ' . $git_path . ' "' . $branch_type . ' ' . $word . '"', $output);
+        echo 'PullRequest<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return starts_with(trim($last_line), 'https://github.com/TechEtoK/TechEtoK_Words/pull/');
     }
 
     public static function checkoutToMaster($git_path)
     {
-        exec('git -C ' . $git_path . ' checkout -f master 2>&1', $output);
+        $last_line = exec('git -C ' . $git_path . ' checkout -f master 2>&1', $output);
+        echo 'CheckOutMaster<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return trim($output[0]) == 'Switched to branch \'master\'';
     }
 
     public static function deleteLocalBranch($git_path, $branch_name)
     {
-        $last_line = exec('git -C ' . $git_path . ' branch -D ' . $branch_name);
+        $last_line = exec('git -C ' . $git_path . ' branch -D ' . $branch_name, $output);
+        echo 'DeleteLocalBranch<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return static::startsWith(trim($last_line), 'Deleted branch ' . $branch_name);
     }
 
     public static function deleteRemoteBranch($git_path, $branch_name)
     {
-        $last_line = exec('git -C ' . $git_path . ' push --delete origin ' . $branch_name . ' 2>&1');
+        $last_line = exec('git -C ' . $git_path . ' push --delete origin ' . $branch_name . ' 2>&1', $output);
+        echo 'DeleteRemoteBranch<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return trim($last_line) == '- [deleted]         ' . $branch_name;
     }
 
