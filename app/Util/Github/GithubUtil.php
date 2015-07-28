@@ -39,7 +39,10 @@ class GithubUtil
 
     public static function pullRequest($git_path, $branch_type, $word)
     {
-        $last_line = exec(__DIR__ . '/pull-request.sh ' . $git_path . ' "' . $branch_type . ' ' . $word . '"');
+        $last_line = exec(__DIR__ . '/pull-request.sh ' . $git_path . ' "' . $branch_type . ' ' . $word . '"', $output);
+        echo 'PullRequest<br />';
+        echo 'Output: ' . print_r($output, true) . '<br />';
+        echo 'LastLine: ' . $last_line . '<br />';
         return starts_with(trim($last_line), 'https://github.com/TechEtoK/TechEtoK_Words/pull/');
     }
 
