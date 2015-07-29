@@ -6,7 +6,6 @@ use App\Models\Words;
 use App\Models\WordsTags;
 use App\Util\Markdown\MarkdownUtil;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class WebController extends BaseController

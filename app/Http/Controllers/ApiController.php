@@ -7,7 +7,6 @@ use App\Models\WordsAuthors;
 use App\Models\WordsTags;
 use App\Models\WordsUpdateLocks;
 use App\Util\Github\GithubUtil;
-use App\Util\Markdown\MarkdownUtil;
 use App\Util\Markdown\MarkdownWords;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,12 +16,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class ApiController extends BaseController
 {
-    public function test()
-    {
-        $result = GithubUtil::pullRequest(MarkdownWords::MARKDOWN_DIR, GithubUtil::BRANCH_TYPE_MODIFIED, 'Delegate');
-        echo 'PullRequestResult: ' . $result . '<br />';
-    }
-
     public function search(Request $request)
     {
         $query = $request->input('q', null);
@@ -325,7 +318,6 @@ class ApiController extends BaseController
             }
         }
 
-        // 실패시, Sentry에 에러를 보낸다.
-        // TODO: Sentry
+        // TODO: Error report
     }
 }
