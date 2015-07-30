@@ -73,6 +73,16 @@ span.delete_word_content {
     padding-left: 10px;
 }
 
+/* PleaseWait & SpinKit */
+.pg-loading-html .loading-message {
+    color: #ffffff;
+}
+
+.sk-wave .sk-rect {
+    background-color: #ffffff !important;
+    margin: 0 1px;
+}
+
 @media (max-width: 767px) {
     input[id^="related_words_"] {
         margin-bottom: 5px;

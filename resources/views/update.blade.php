@@ -75,6 +75,11 @@
 @stop
 
 @section("script")
+    <!-- PleaseWait (Page Loading Indicator) -->
+    <link rel="stylesheet" href="/bower_components/spinkit/css/spinkit.css" />
+    <link rel="stylesheet" href="/bower_components/please-wait/build/please-wait.css" />
+    <script type="text/javascript" src="/bower_components/please-wait/build/please-wait.min.js"></script>
+
     <script>
         $(function() {
             $(".btn-danger").click(function () {
@@ -84,10 +89,12 @@
 
             $(".btn-warning").click(function () {
                 if (confirm("관리자의 승인 후에 수정됩니다. 수정하시겠습니까?")) {
+                    showLoadingScreen();
+
                     normalizeFormElementsName();
 
                     $.post("/api/edit", $("#wordForm").serialize(), function () {
-                        alert("감사합니다 :)");
+                        alert("고맙습니다 :)");
                         location.href = "/";
                     }).fail(function (xhr) {
                         if (xhr.status == 503) {    // HTTP_SERVICE_UNAVAILABLE
@@ -97,6 +104,8 @@
                         } else {
                             alert("오류가 발생하였습니다 :( 다시 시도해주세요!");
                         }
+                    }).always(function () {
+                        hideLoadingScreen();
                     });
                 }
                 return false;
@@ -104,10 +113,12 @@
 
             $(".btn-info").click(function () {
                 if (confirm("관리자의 승인 후에 추가됩니다. 추가하시겠습니까?")) {
+                    showLoadingScreen();
+
                     normalizeFormElementsName();
 
                     $.post("/api/add", $("#wordForm").serialize(), function () {
-                        alert("감사합니다 :)");
+                        alert("고맙습니다 :)");
                         location.href = "/";
                     }).fail(function (xhr) {
                         if (xhr.status == 503) {    // HTTP_SERVICE_UNAVAILABLE
@@ -117,6 +128,8 @@
                         } else {
                             alert("오류가 발생하였습니다 :( 다시 시도해주세요!");
                         }
+                    }).always(function () {
+                        hideLoadingScreen();
                     });
                 }
                 return false;
@@ -168,6 +181,21 @@
                 tag.val("");
                 $(this).before(tag);
             });
+
+            var loadingScreen = null;
+            function showLoadingScreen() {
+                loadingScreen = pleaseWait({
+                    logo: "/images/logo.png",
+                    backgroundColor: '#c9463b',
+                    loadingHtml: "<p class='loading-message'>고맙습니다. 조금만 기다려 주세요 :D</p><div class='sk-wave'><div class='sk-rect sk-rect1'></div><div class='sk-rect sk-rect2'></div><div class='sk-rect sk-rect3'></div><div class='sk-rect sk-rect4'></div><div class='sk-rect sk-rect5'></div></div>"
+                });
+            }
+
+            function hideLoadingScreen() {
+                if (loadingScreen !== null) {
+                    loadingScreen.finish();
+                }
+            }
 
             function normalizeFormElementsName() {
                 $("#word_contents").children().each(function (index, word_content) {
