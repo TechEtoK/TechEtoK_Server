@@ -84,8 +84,6 @@ final class Words extends Model
         foreach ($sub_htmls as &$sub_html) {
             // 사용처에 따라 나눈 HTML 소스 앞에다가 title을 붙여준다. (Nav 형태로 사용하기 위함.)
             $sub_html = $title . $sub_html;
-
-            // TODO: 관련 단어의 링크 추가
         }
         return $sub_htmls;
     }

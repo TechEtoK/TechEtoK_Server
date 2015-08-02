@@ -27,6 +27,20 @@ class ApiController extends BaseController
         return response()->json(['words' => $words]);
     }
 
+    public function exist(Request $request)
+    {
+        $query = $request->input('word', null);
+        if ($query === null) {
+            return response('잘못된 파라미터입니다.', Response::HTTP_BAD_REQUEST);
+        }
+
+        if (empty(Words::getByWord($query))) {
+            return response('단어가 없습니다.', Response::HTTP_NOT_FOUND);
+        } else {
+            return response('성공', Response::HTTP_OK);
+        }
+    }
+
     public function addWord(Request $request)
     {
         if (WordsUpdateLocks::isLocked()) {

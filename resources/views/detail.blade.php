@@ -61,6 +61,20 @@
             }  else {
                 showFirstTab();
             }
+
+            // 관련 단어 link 추가
+            $("h3:contains('관련 단어')").next().each(function () {
+                $(this).find("li").each(function () {
+                    var li = $(this);
+                    var word = li.text().trim();
+                    $.post("/api/exist", {"word": word}, function () {
+                        var html = "<a href='/" + word + "'>" + word + "</a>";
+                        li.html(html);
+                    }).fail(function () {
+                        // Do nothing
+                    });
+                });
+            });
         });
 
         function showFirstTab() {

@@ -16,5 +16,6 @@ $app->get('/update', 'WebController@update');
 $app->get('/{query}', 'WebController@detail');
 
 $app->get('/api/search', 'ApiController@search');
+$app->post('/api/exist', 'ApiController@exist');
 $app->post('/api/add', 'ApiController@addWord');
 $app->post('/api/edit', 'ApiController@editWord');

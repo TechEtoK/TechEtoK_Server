@@ -204,7 +204,7 @@ class MarkdownWords
             $markdown .= '### ' . self::HEAD_RELATED_WORD . "\n";
             if (!empty($this->related_words[$i])) {
                 foreach ($this->related_words[$i] as $related_word) {
-                    $markdown .= self::MARK_LIST . ' ' . $related_word;
+                    $markdown .= self::MARK_LIST . ' ' . $related_word . "\n";
                 }
             }
 
