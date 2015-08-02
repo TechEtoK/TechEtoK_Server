@@ -68,14 +68,21 @@
                     var li = $(this);
                     var word = li.text().trim();
                     $.post("/api/exist", {"word": word}, function () {
-                        var html = "<a href='/" + word + "'>" + word + "</a>";
+                        var html = "<a href='/" + word + "' target='_blank'>" + word + "</a>";
                         li.html(html);
                     }).fail(function () {
                         // 관련 단어가 DB에 없는 경우에 단어를 클릭하면 새로 추가하는 화면으로 이동.
-                        var html = "<a href='/update?word=" + word + "'>" + word + "</a>";
+                        var html = "<a href='/update?word=" + word + "' target='_blank'>" + word + "</a>";
                         li.html(html);
                         li.find("a").css("color", "#e74c3c");
                     });
+                });
+            });
+
+            // 관련 링크 a 태그 target 설정
+            $("h3:contains('관련 링크')").next().each(function () {
+                $(this).find("li").each(function () {
+                    $(this).find("a").attr("target", "_blank");
                 });
             });
         });
