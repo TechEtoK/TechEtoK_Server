@@ -210,11 +210,9 @@
                         $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
                     });
 
-                    // 관련단어 name 정규화
-                    $(this).find("div#related_words_group div#related_words").each(function (j, div) {
-                        $(this).find("input").each(function () {
-                            $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
-                        });
+                    // 관련 단어 name 정규화
+                    $(this).find("div#related_words_group input").each(function (j, input) {
+                        $(this).attr("name", $(this).attr("id") + "[" + index + "][" + j + "]");
                     });
 
                     // 간략 설명 name 정규화

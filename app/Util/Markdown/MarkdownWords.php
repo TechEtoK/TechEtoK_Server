@@ -87,13 +87,11 @@ class MarkdownWords
             }
 
             // 관련 단어
-            for ($j = 0; $j < count($values['related_words_words'][$i]); $j++) {
-                $related_words_word = trim($values['related_words_words'][$i][$j]);
-                $related_words_link = preg_replace('/\s+/', '', $values['related_words_links'][$i][$j]);   // 링크에는 공백이 들어가면 안된다.
-                if (empty($related_words_link)) {
-                    $related_words_link = null;
+            foreach ($values['related_words'][$i] as $related_word) {
+                $related_word = trim($related_word);
+                if (!empty($related_word)) {
+                    $word->related_words[$i][] = $related_word;
                 }
-                $word->related_words[$i][] = new RelatedWords($related_words_word, $related_words_link);
             }
 
             // 간략 설명
@@ -148,27 +146,15 @@ class MarkdownWords
             }
 
             // 관련 단어
-            preg_match_all(self::REGEX_RELATED_WORD, $sub_markdown, $related_words);
-            $related_words = $related_words[1][0];
-            preg_match_all(self::MARK_REGEX_LINKED_LIST_TEXT, $related_words, $related_words_words);
-            $related_words_words = $related_words_words[1];
-            preg_match_all(self::MARK_REGEX_LINKED_LIST_LINK, $related_words, $related_words_links);
-            $related_words_links['text'] = $related_words_links[1];
-            $related_words_links['link'] = $related_words_links[2];
-            foreach ($related_words_words as $related_words_word) {
-                $related_words_word = trim($related_words_word);
-                if (empty($related_words_word)) {
-                    continue;
+            preg_match_all(self::REGEX_RELATED_WORD, $sub_markdown, $temp_related_words);
+            $temp_related_words = $temp_related_words[1][0];
+            preg_match_all(self::MARK_REGEX_LINKED_LIST_TEXT, $temp_related_words, $related_words);
+            $related_words = $related_words[1];
+            foreach ($related_words as $related_word) {
+                $related_word = trim($related_word);
+                if (!empty($related_word)) {
+                    $word->related_words[$i][] = $related_word;
                 }
-
-                $related_words_link = null;
-
-                $index = array_search($related_words_word, $related_words_links['text']);
-                if ($index !== false) {
-                    $related_words_link = $related_words_links['link'][$index];
-                    $related_words_link = preg_replace('/\s+/', '', $related_words_link);   // 링크에는 공백이 들어가면 안된다.
-                }
-                $word->related_words[$i][] = new RelatedWords($related_words_word, $related_words_link);
             }
 
             // 간략 설명
@@ -217,25 +203,13 @@ class MarkdownWords
             // 관련 단어
             $markdown .= '### ' . self::HEAD_RELATED_WORD . "\n";
             if (!empty($this->related_words[$i])) {
-                $related_words_link_empty = true;
-
                 // 관련 단어 - 단어
                 foreach ($this->related_words[$i] as $related_word) {
-                    $markdown .= self::MARK_LINK_LIST_START . $related_word->word . self::MARK_LINK_LIST_END . "\n";
-                    if ($related_word->link !== null && $related_words_link_empty) {
-                        $related_words_link_empty = false;
-                    }
+                    $markdown .= self::MARK_LINK_LIST_START . $related_word . self::MARK_LINK_LIST_END . "\n";
                 }
 
                 // 관련 단어 - 링크
-                if (!$related_words_link_empty) {
-                    $markdown .= "\n";
-                    foreach ($this->related_words[$i] as $related_word) {
-                        if ($related_word->link !== null) {
-                            $markdown .= self::MARK_LINK_START . $related_word->word . self::MARK_LINK_END . $related_word->link . "\n";
-                        }
-                    }
-                }
+                // TODO:
             }
 
             // 간략 설명

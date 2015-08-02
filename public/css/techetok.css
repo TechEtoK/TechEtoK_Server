@@ -37,12 +37,8 @@ textarea[id^="examples"] {
     margin-bottom: 5px;
 }
 
-div[id^="related_words"] {
+input[id^="related_words"] {
     margin-bottom: 5px;
-}
-
-input[id^="related_words_"] {
-    width: 49% !important;
 }
 
 .add-related_words {
@@ -81,10 +77,4 @@ span.delete_word_content {
 .sk-wave .sk-rect {
     background-color: #ffffff !important;
     margin: 0 1px;
-}
-
-@media (max-width: 767px) {
-    input[id^="related_words_"] {
-        margin-bottom: 5px;
-    }
 }

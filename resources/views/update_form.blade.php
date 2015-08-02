@@ -30,16 +30,10 @@
         <label for="related_words">관련 단어</label>
         @if (isset($word) and count($word->related_words[$index]) > 0)
             @foreach ($word->related_words[$index] as $related_word)
-                <div class="form-inline" id="related_words">
-                    <input type="text" class="form-control" id="related_words_words" placeholder="관련 단어의 단어를 입력해주세요. (예. Data source)" value="{{ $related_word->word }}">
-                    <input type="url" class="form-control" id="related_words_links" placeholder="관련 단어의 링크를 입력해주세요. (예. https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/CreatingCellsandViews/CreatingCellsandViews.html)" value="{{ $related_word->link or "" }}">
-                </div>
+                <input type="text" class="form-control" id="related_words" placeholder="관련 단어를 입력해주세요. (예. Data source)" value="{{ $related_word }}">
             @endforeach
         @else
-            <div class="form-inline" id="related_words">
-                <input type="text" class="form-control" id="related_words_words" placeholder="관련 단어의 단어를 입력해주세요. (예. Data source)">
-                <input type="url" class="form-control" id="related_words_links" placeholder="관련 단어의 링크를 입력해주세요. (예. https://developer.apple.com/library/ios/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/CreatingCellsandViews/CreatingCellsandViews.html)">
-            </div>
+            <input type="text" class="form-control" id="related_words" placeholder="관련 단어를 입력해주세요. (예. Data source)">
         @endif
         <button type="button" class="btn btn-default add-related_words">관련 단어 추가하기</button>
     </div>
