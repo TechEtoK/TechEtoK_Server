@@ -146,10 +146,9 @@ class MarkdownWords
             }
 
             // 관련 단어
-            preg_match_all(self::REGEX_RELATED_WORD, $sub_markdown, $temp_related_words);
-            $temp_related_words = $temp_related_words[1][0];
-            preg_match_all(self::MARK_REGEX_LINKED_LIST_TEXT, $temp_related_words, $related_words);
-            $related_words = $related_words[1];
+            preg_match_all(self::REGEX_RELATED_WORD, $sub_markdown, $related_words);
+            $related_words = $related_words[1][0];
+            $related_words = explode(self::MARK_LIST, $related_words);
             foreach ($related_words as $related_word) {
                 $related_word = trim($related_word);
                 if (!empty($related_word)) {
