@@ -22,7 +22,7 @@
     </div>
 
     <div class="form-actions">
-        <button class="btn btn-primary">다시 검색하기</button>
+        <button class="btn btn-primary">이전으로</button>
         <button class="btn btn-warning pull-right">수정하기</button>
     </div>
 @stop
@@ -31,7 +31,7 @@
     <script>
         $(function() {
             $(".btn-primary").click(function () {
-                location.href = "/?q=delegate";
+                history.back();
                 return false;
             });
 

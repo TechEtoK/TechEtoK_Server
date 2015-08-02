@@ -95,4 +95,9 @@ $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../app/Http/routes.php';
 });
 
+/* Define Value */
+define('REAL_TECHETOK_BASE_URL', 'http://yoobato.techetok.com');
+define('TEST_TECHETOK_BASE_URL', 'http://techetok.kr');
+define('TECHETOK_BASE_URL', REAL_TECHETOK_BASE_URL);
+
 return $app;
