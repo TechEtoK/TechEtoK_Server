@@ -71,7 +71,10 @@
                         var html = "<a href='/" + word + "'>" + word + "</a>";
                         li.html(html);
                     }).fail(function () {
-                        // Do nothing
+                        // 관련 단어가 DB에 없는 경우에 단어를 클릭하면 새로 추가하는 화면으로 이동.
+                        var html = "<a href='/update?word=" + word + "'>" + word + "</a>";
+                        li.html(html);
+                        li.find("a").css("color", "#e74c3c");
                     });
                 });
             });
