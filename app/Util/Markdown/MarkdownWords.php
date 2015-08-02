@@ -2,8 +2,6 @@
 
 namespace App\Util\Markdown;
 
-use App\Models\Words;
-
 class MarkdownWords
 {
     const MARKDOWN_DIR = '/var/www/techetok_words/';
@@ -205,26 +203,8 @@ class MarkdownWords
             // 관련 단어
             $markdown .= '### ' . self::HEAD_RELATED_WORD . "\n";
             if (!empty($this->related_words[$i])) {
-                $related_word_links = array();
-
-                // 관련 단어 - 단어
                 foreach ($this->related_words[$i] as $related_word) {
-                    $markdown .= self::MARK_LINK_LIST_START . $related_word . self::MARK_LINK_LIST_END . "\n";
-
-                    // 관련 단어의 링크
-                    $related_word_word = Words::getByWord($related_word);
-                    if (!empty($related_word_word)) {
-                        $related_word_word = $related_word_word->word;
-                        $related_word_links[$related_word_word] = TECHETOK_BASE_URL . '/' . urlencode($related_word_word);
-                    }
-                }
-
-                // 관련 단어 - 링크
-                if (!empty($related_word_links)) {
-                    $markdown .= "\n";
-                    foreach ($related_word_links as $word => $link) {
-                        $markdown .= self::MARK_LINK_START . $word . self::MARK_LINK_END . $link . "\n";
-                    }
+                    $markdown .= self::MARK_LIST . ' ' . $related_word;
                 }
             }
 

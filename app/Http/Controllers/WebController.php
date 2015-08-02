@@ -30,7 +30,7 @@ class WebController extends BaseController
             return view('not_found', ['query' => $query]);
         }
 
-        $published_htmls = $word->getPublishedHTMLs(MarkdownUtil::MARKDOWN_BY_PARSE_DOWN, true, $usages);
+        $published_htmls = $word->getPublishedHTMLs(MarkdownUtil::MARKDOWN_BY_PARSE_DOWN, $usages);
         return view('detail', ['word' => $word->word, 'usages' => $usages, 'published_htmls' => $published_htmls]);
     }
 

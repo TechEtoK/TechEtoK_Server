@@ -66,17 +66,10 @@ final class Words extends Model
         return MarkdownWords::importMarkdown($markdown);
     }
 
-    public function getPublishedHTMLs($markdown_by, $separate_by_usage = false, &$usages = null) {
+    public function getPublishedHTMLs($markdown_by, &$usages = null) {
         $markdown = self::getMarkdownContent();
 
         $html = MarkdownUtil::getHTML($markdown, $markdown_by);
-
-        if ($separate_by_usage === false) {
-            return $html;
-        }
-
-        // 여기부터는 separate_by_usage가 true이므로, 사용처가 한 개일지라도 array로 반환한다.
-
         $usage_count = preg_match_all(MarkdownUtil::getUsagesRegEx($markdown_by), $html, $usages);
         if ($usage_count <= 1) {
             return array($html);
@@ -91,6 +84,8 @@ final class Words extends Model
         foreach ($sub_htmls as &$sub_html) {
             // 사용처에 따라 나눈 HTML 소스 앞에다가 title을 붙여준다. (Nav 형태로 사용하기 위함.)
             $sub_html = $title . $sub_html;
+
+            // TODO: 관련 단어의 링크 추가
         }
         return $sub_htmls;
     }
