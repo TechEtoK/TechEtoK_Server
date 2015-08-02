@@ -8,8 +8,8 @@
     <meta content="영어로된 기술 용어를 이해하기 쉬운 한국어로 번역" name="description"/>
     <meta content="Yagom & Yoobato" name="author" />
 
-    {{--TODO: Favicon--}}
-    {{--<link rel="icon" href="../../favicon.ico">--}}
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 
     <title>@yield("title", "TechEtoK")</title>
 
