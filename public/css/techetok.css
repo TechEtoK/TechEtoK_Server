@@ -33,6 +33,10 @@ code {
     font-size: 80%;
 }
 
+div.well {
+    word-wrap: break-word;
+}
+
 textarea[id^="examples"] {
     margin-bottom: 5px;
 }
