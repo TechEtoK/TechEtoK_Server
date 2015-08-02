@@ -166,7 +166,7 @@
 
             $(".add-related_words").click(function () {
                 var relatedWord = $("#related_words").last().clone(true);
-                relatedWord.children().val("");
+                relatedWord.val("");
                 $(this).before(relatedWord);
             });
 
