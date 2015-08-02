@@ -10,6 +10,7 @@ class GithubUtil
     public static function makeBranchName($word, $branch_type)
     {
         $now_date = date('YmdHis');
+        $word = preg_replace('/\s+/', '_', $word);   // 브랜치 이름에는 공백이 들어갈 수 없다.
         return $branch_type . '_' . $word . '_' . $now_date;
     }
 
