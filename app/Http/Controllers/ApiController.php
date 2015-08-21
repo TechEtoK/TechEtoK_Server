@@ -169,8 +169,8 @@ class ApiController extends BaseController
         }
 
         $use_git = true;
-        $ori_markdown = $word->getMarkdownObjects();
-        if (MarkdownWords::isEqual($ori_markdown, $markdown)) {
+        $ori_markdown_word = $word->getMarkdownObjects();
+        if (MarkdownWords::isEqual($ori_markdown_word, $markdown_word)) {
             // 단어 마크다운 내용이 모두 같고, 태그만 다르다면 Git 관련 커맨드를 사용하지 않는다.
             $use_git = false;
         }
