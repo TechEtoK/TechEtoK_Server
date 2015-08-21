@@ -240,7 +240,7 @@ class ApiController extends BaseController
                 // 1. 단어 DB 관련 작업
                 DB::beginTransaction();
                 $db_transaction_began = true;
-                static::addWordsTagsAndAuthor($word->id, $values['tag'], true, $values['author_name'], $values['author_email']);
+                static::addWordsTagsAndAuthor($word->id, $values['tags'], true, $values['author_name'], $values['author_email']);
             }
 
             DB::commit();
