@@ -20,9 +20,9 @@ class CreateWordsAuthorsTable extends Migration
             $table->unsignedInteger('word_id');
             $table->string('name')->nullable();
             $table->string('email')->nullable();
-            $table->string('commit');
+            $table->string('commit')->nullable();
 
-            $table->unique('commit');
+            $table->index('commit');
             $table->index('word_id');
         });
     }

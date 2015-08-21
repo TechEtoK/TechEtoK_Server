@@ -106,27 +106,7 @@ class ApiController extends BaseController
                 'file_name' => $md_file_name
             ]);
 
-            // 단어 태그 추가
-            foreach ($values['tags'] as $tag) {
-                if (empty($tag)) {
-                    continue;
-                }
-
-                WordsTags::create([
-                    'word_id' => $word->id,
-                    'tag' => $tag
-                ]);
-            }
-
-            // 작성자 추가
-            $author_name = empty($values['author_name']) ? '' : trim($values['author_name']);
-            $author_email = empty($values['author_email']) ? '' : trim($values['author_email']);
-            WordsAuthors::create([
-                'word_id' => $word->id,
-                'name' => $author_name,
-                'email' => $author_email,
-                'commit' => $commit_id
-            ]);
+            static::addWordsTagsAndAuthor($word->id, $values['tags'], false, $values['author_name'], $values['author_email'], $commit_id);
 
             // 5. Git Push
             if (!GithubUtil::push($git_path, $git_branch_name)) {
@@ -188,6 +168,13 @@ class ApiController extends BaseController
             return response('단어를 찾을 수 없습니다.', Response::HTTP_NOT_FOUND);
         }
 
+        $use_git = true;
+        $ori_markdown = $word->getMarkdownObjects();
+        if (MarkdownWords::isEqual($ori_markdown, $markdown)) {
+            // 단어 마크다운 내용이 모두 같고, 태그만 다르다면 Git 관련 커맨드를 사용하지 않는다.
+            $use_git = false;
+        }
+
         // 마크다운 파일 경로
         $md_file_name = MarkdownWords::makeMarkdownFileName($markdown_word->title);
         $md_file_path = MarkdownWords::MARKDOWN_DIR . $md_file_name;
@@ -197,78 +184,63 @@ class ApiController extends BaseController
         $git_branch_name = GithubUtil::makeBranchName($markdown_word->title, GithubUtil::BRANCH_TYPE_MODIFIED);
 
         $git_checkoutted = $db_transaction_began = $git_pushed = false;
+
         try {
-            // 1. 원본 파일 삭제
-            if (!unlink($md_file_path)) {
-                throw new Exception('원본 파일을 삭제하지 못했습니다.');
-            }
-
-            // 2. 단어 파일 생성
-            $md_file = fopen($md_file_path, 'w');
-            if ($md_file === false) {
-                fclose($md_file);
-                throw new Exception('Markdown 파일 생성 실패');
-            }
-            if (fwrite($md_file, $markdown) === false) {
-                fclose($md_file);
-                throw new Exception('Markdown 파일 쓰기 실패');
-            }
-            fclose($md_file);
-
-            // 3. Git Checkout
-            if (!GithubUtil::checkout($git_path, $git_branch_name)) {
-                throw new Exception('Git Checkout 실패');
-            }
-            $git_checkoutted = true;
-
-            // 4. Git Commit
-            if (!GithubUtil::addCommit($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, $markdown_word->title)) {
-                throw new Exception('Git Add & Commit 실패');
-            }
-            $commit_id = GithubUtil::getLastShortCommitID($git_path);
-
-            // 5. 단어 DB 관련 작업
-            DB::beginTransaction();
-            $db_transaction_began = true;
-
-            // 태그 삭제 후 다시 추가
-            WordsTags::deleteByWord($word->id);
-            // 단어 태그 추가
-            foreach ($values['tags'] as $tag) {
-                if (empty($tag)) {
-                    continue;
+            if ($use_git) {
+                // 1. 원본 파일 삭제
+                if (!unlink($md_file_path)) {
+                    throw new Exception('원본 파일을 삭제하지 못했습니다.');
                 }
 
-                WordsTags::create([
-                    'word_id' => $word->id,
-                    'tag' => $tag
-                ]);
-            }
+                // 2. 단어 파일 생성
+                $md_file = fopen($md_file_path, 'w');
+                if ($md_file === false) {
+                    fclose($md_file);
+                    throw new Exception('Markdown 파일 생성 실패');
+                }
+                if (fwrite($md_file, $markdown) === false) {
+                    fclose($md_file);
+                    throw new Exception('Markdown 파일 쓰기 실패');
+                }
+                fclose($md_file);
 
-            // 작성자 추가
-            $author_name = empty($values['author_name']) ? '' : trim($values['author_name']);
-            $author_email = empty($values['author_email']) ? '' : trim($values['author_email']);
-            WordsAuthors::create([
-                'word_id' => $word->id,
-                'name' => $author_name,
-                'email' => $author_email,
-                'commit' => $commit_id
-            ]);
+                // 3. Git Checkout
+                if (!GithubUtil::checkout($git_path, $git_branch_name)) {
+                    throw new Exception('Git Checkout 실패');
+                }
+                $git_checkoutted = true;
 
-            // 6. Git Push
-            if (!GithubUtil::push($git_path, $git_branch_name)) {
-                throw new Exception('Git Push 실패');
-            }
-            $git_pushed = true;
+                // 4. Git Commit
+                if (!GithubUtil::addCommit($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, $markdown_word->title)) {
+                    throw new Exception('Git Add & Commit 실패');
+                }
+                $commit_id = GithubUtil::getLastShortCommitID($git_path);
 
-            // 7. Git Pull-Request
-            if (!GithubUtil::pullRequest($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, $word->word)) {
-                throw new Exception('Git Pull-request 실패');
-            }
+                // 5. 단어 태그 + 작성자 DB 관련 작업
+                DB::beginTransaction();
+                $db_transaction_began = true;
+                static::addWordsTagsAndAuthor($word->id, $values['tags'], true, $values['author_name'], $values['author_email'], $commit_id);
 
-            // 8. Git Checkout to master
-            if (!GithubUtil::checkoutToMaster($git_path)) {
-                throw new Exception('Git Checkout master 실패');
+                // 6. Git Push
+                if (!GithubUtil::push($git_path, $git_branch_name)) {
+                    throw new Exception('Git Push 실패');
+                }
+                $git_pushed = true;
+
+                // 7. Git Pull-Request
+                if (!GithubUtil::pullRequest($git_path, GithubUtil::BRANCH_TYPE_MODIFIED, $word->word)) {
+                    throw new Exception('Git Pull-request 실패');
+                }
+
+                // 8. Git Checkout to master
+                if (!GithubUtil::checkoutToMaster($git_path)) {
+                    throw new Exception('Git Checkout master 실패');
+                }
+            } else {
+                // 1. 단어 DB 관련 작업
+                DB::beginTransaction();
+                $db_transaction_began = true;
+                static::addWordsTagsAndAuthor($word->id, $values['tag'], true, $values['author_name'], $values['author_email']);
             }
 
             DB::commit();
@@ -281,7 +253,7 @@ class ApiController extends BaseController
                 static::rollbackGithubWhileSuccess($git_path, $git_branch_name, true);
             } else if ($git_checkoutted) {
                 static::rollbackGithubWhileSuccess($git_path, $git_branch_name, false);
-            } else {
+            } else if ($use_git) {
                 GithubUtil::undoChanges($git_path);
             }
 
@@ -291,6 +263,41 @@ class ApiController extends BaseController
 
         WordsUpdateLocks::setLock(false);
         return response('단어를 수정했습니다.', Response::HTTP_OK);
+    }
+
+    // 단어 태그, 작성자를 추가한다.
+    private static function addWordsTagsAndAuthor($word_id, $tags, $should_delete_tags, $author_name, $author_email, $commit_id = null)
+    {
+        if ($should_delete_tags) {
+            // 태그 삭제 후 다시 추가
+            WordsTags::deleteByWord($word_id);
+        }
+
+        // 단어 태그 추가
+        foreach ($tags as $tag) {
+            if (empty($tag)) {
+                continue;
+            }
+
+            WordsTags::create([
+                'word_id' => $word_id,
+                'tag' => $tag
+            ]);
+        }
+
+        // 작성자 추가
+        $author_name = empty($author_name) ? '' : trim($author_name);
+        $author_email = empty($author_email) ? '' : trim($author_email);
+        $word_authors_values = array(
+            'word_id' => $word_id,
+            'name' => $author_name,
+            'email' => $author_email
+        );
+        if ($commit_id !== null) {
+            $word_authors_values['commit'] = $commit_id;
+        }
+
+        WordsAuthors::create($word_authors_values);
     }
 
     // Github 관련 롤백이 성공할 때까지 롤백을 시도한다.

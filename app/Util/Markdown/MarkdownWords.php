@@ -234,4 +234,68 @@ class MarkdownWords
         $file_name .= '.md';
         return $file_name;
     }
+
+    // Compare if equal
+    public static function isEqual($l_markdown_word, $r_markdown_word) {
+        // 타이틀
+        if ($l_markdown_word->title !== $r_markdown_word->title) {
+            return false;
+        }
+
+        // 사용처
+        if ($l_markdown_word->usages !== $r_markdown_word->usages) {
+            return false;
+        }
+
+        // 한글표현
+        if ($l_markdown_word->kor_expressions !== $r_markdown_word->kor_expressions) {
+            return false;
+        }
+
+        // 사용 예
+        if ($l_markdown_word->examples !== $r_markdown_word->examples) {
+            return false;
+        } else {
+            for ($i = 0; $i < count($l_markdown_word->examples); $i++) {
+                $l_examples = $l_markdown_word->examples[$i];
+                $r_examples = $r_markdown_word->examples[$i];
+                if ($l_examples !== $r_examples) {
+                    return false;
+                }
+            }
+        }
+
+        // 관련 단어
+        if ($l_markdown_word->related_words !== $r_markdown_word->related_words) {
+            return false;
+        } else {
+            for ($i = 0; $i < count($l_markdown_word->related_words); $i++) {
+                $l_related_words = $l_markdown_word->related_words[$i];
+                $r_related_words = $r_markdown_word->related_words[$i];
+                if ($l_related_words !== $r_related_words) {
+                    return false;
+                }
+            }
+        }
+
+        // 간략 설명
+        if ($l_markdown_word->summaries !== $r_markdown_word->summaries) {
+            return false;
+        }
+
+        // 관련 링크
+        if ($l_markdown_word->related_links !== $r_markdown_word->related_links) {
+            return false;
+        } else {
+            for ($i = 0; $i < count($l_markdown_word->related_links); $i++) {
+                $l_related_links = $l_markdown_word->related_links[$i];
+                $r_related_links = $r_markdown_word->related_links[$i];
+                if ($l_related_links !== $r_related_links) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
